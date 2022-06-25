@@ -1,7 +1,36 @@
+import { createTheme, ThemeProvider } from "@mui/material";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import React from "react";
+import { Navbar } from "./components/Navbar";
+import { MainPage } from "./pages/MainPage";
+import "./App.css";
 
-function App() {
-  return <div>JSound</div>;
-}
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#ff4810",
+    },
+    secondary: {
+      main: "#ff4810",
+    },
+  },
+});
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <div className="App">
+        <ThemeProvider theme={theme}>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/" element={"Home"} />
+            <Route path="/" element={"Home"} />
+          </Routes>
+        </ThemeProvider>
+      </div>
+    </BrowserRouter>
+  );
+};
 
 export default App;
