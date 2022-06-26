@@ -10,8 +10,9 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import { styled } from "@mui/material";
 
-const pages = ["Главная", "Коллекция", "Blog"];
+const pages = ["Главное", "Коллекция", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 export const Navbar = () => {
@@ -37,8 +38,15 @@ export const Navbar = () => {
     setAnchorElUser(null);
   };
 
+  const CustomAppBar = styled(AppBar)`
+    min-height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `;
+
   return (
-    <AppBar position="static">
+    <CustomAppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -49,22 +57,12 @@ export const Navbar = () => {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontSize: "20px",
-              fontFamily: "Source Sans Pro",
-              color: "inherit",
-              textDecoration: "none",
             }}
           >
-            JSound
+            <img src={require("../assets/logo.png")} alt="Logo" />
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            ></IconButton>
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -96,10 +94,11 @@ export const Navbar = () => {
                 key={page}
                 onClick={handleCloseNavMenu}
                 sx={{
+                  textTransform: "none",
                   my: 2,
                   color: "white",
+                  fontSize: "20px",
                   display: "block",
-                  fontFamily: "Source Sans Pro",
                 }}
               >
                 {page}
@@ -115,17 +114,7 @@ export const Navbar = () => {
             </Tooltip>
             <Menu
               sx={{ mt: "45px" }}
-              id="menu-appbar"
               anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
@@ -138,6 +127,6 @@ export const Navbar = () => {
           </Box>
         </Toolbar>
       </Container>
-    </AppBar>
+    </CustomAppBar>
   );
 };
