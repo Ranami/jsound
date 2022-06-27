@@ -46,6 +46,7 @@ export const Navbar = () => {
     text-transform: none;
     font-size: 20px;
     transition: 0.2s;
+    margin-left: 5px;
     &.active {
       color: white;
     }

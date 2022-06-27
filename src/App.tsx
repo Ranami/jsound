@@ -1,4 +1,4 @@
-import { createTheme, ThemeProvider } from "@mui/material";
+import { createTheme, styled, ThemeProvider } from "@mui/material";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import React from "react";
 import { Navbar } from "./components/Navbar";
@@ -16,10 +16,17 @@ const theme = createTheme({
   },
 });
 
+const Wrapper = styled("div")`
+  max-width: 1440px;
+  margin: 0 auto;
+  background-color: #181818;
+  height: 100vh;
+`;
+
 const App = () => {
   return (
     <BrowserRouter>
-      <div className="App">
+      <Wrapper>
         <ThemeProvider theme={theme}>
           <Navbar />
           <Routes>
@@ -28,7 +35,7 @@ const App = () => {
             <Route path="/" element={"Home"} />
           </Routes>
         </ThemeProvider>
-      </div>
+      </Wrapper>
     </BrowserRouter>
   );
 };
