@@ -6,7 +6,8 @@
 .rhap_header {
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
     font-size: 1.3em;
-
+    text-align: left;
+    height: 50px;
 }
 
 .rhap_progress-bar {
@@ -32,4 +33,12 @@
 .rhap_container {
     text-align: center;
     background-color: #1B2430;
+}
+
+.rhap_volume-controls {
+    flex: none;
+}
+
+.rhap_volume-container {
+    width: 100px;
 }
