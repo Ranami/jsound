@@ -16,6 +16,7 @@ export const MainPage = () => {
   return (
     <Wrapper>
       <Title variant="h3">Главное</Title>
+      {/* <img src={songs[0]?.img} alt="" /> */}
     </Wrapper>
   );
 };

@@ -1,9 +1,12 @@
 import { createTheme, styled, ThemeProvider } from "@mui/material";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar } from "./components/Navbar";
 import { MainPage } from "./pages/MainPage";
 import "./App.css";
+import { CustomAudioPlayer } from "./components/CustomAudioPlayer";
+import { fetchTodos } from "./fetchers/fetchSongs";
+import { SongType } from "./types/songType";
 
 const theme = createTheme({
   palette: {
@@ -24,6 +27,12 @@ const Wrapper = styled("div")`
 `;
 
 const App = () => {
+  const [songs, setSongs] = useState<SongType[]>([]);
+
+  useEffect(() => {
+    fetchTodos().then((data) => setSongs(data));
+  }, []);
+
   return (
     <BrowserRouter>
       <Wrapper>
@@ -34,6 +43,7 @@ const App = () => {
             <Route path="/" element={"Home"} />
             <Route path="/" element={"Home"} />
           </Routes>
+          <CustomAudioPlayer song={songs[0]} />
         </ThemeProvider>
       </Wrapper>
     </BrowserRouter>
