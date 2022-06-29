@@ -1,5 +1,5 @@
 import { styled } from "@mui/material";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import AudioPlayer, { RHAP_UI } from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import "../styles/audioplayer.css";
@@ -32,6 +32,8 @@ const InfoWrapper = styled("div")`
 const SongWrapper = styled("div")`
   display: flex;
   align-items: center;
+  width: 200px;
+  white-space: pre;
 `;
 
 type CustomAudioPlayerType = {
@@ -60,8 +62,8 @@ export const CustomAudioPlayer: FC<CustomAudioPlayerType> = ({ song }) => {
               <img src={song?.img} alt={song?.title} />
             </Image>
             <InfoWrapper>
-              <Title> {song?.title}</Title>
-              <div> {song?.artist}</div>
+              <Title>{song?.title}</Title>
+              <div>{song?.artist}</div>
             </InfoWrapper>
           </SongWrapper>,
           RHAP_UI.MAIN_CONTROLS,
@@ -70,7 +72,6 @@ export const CustomAudioPlayer: FC<CustomAudioPlayerType> = ({ song }) => {
         onPlay={(e) => console.log("onPlay")}
         showSkipControls={true}
         showJumpControls={false}
-        // header={`${song?.artist} - ${song?.title}`}
       />
     </Wrapper>
   );
