@@ -3,7 +3,7 @@ import { styled, Typography } from "@mui/material";
 import { Albums } from "../components/Albums";
 
 const Wrapper = styled("div")`
-  margin: 50px 0 0 30px;
+  padding: 50px 30px;
 `;
 
 const Title = styled(Typography)`

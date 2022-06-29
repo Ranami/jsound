@@ -1,4 +1,4 @@
-import { styled } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchSongs } from "../fetchers/fetchSongs";
@@ -20,6 +20,7 @@ export const Albums = () => {
     margin-top: 50px;
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 30px;
   `;
 
@@ -36,7 +37,14 @@ export const Albums = () => {
       {albums.map((album) => (
         <Poster onClick={() => handleNavigate(album.songs)} key={album.name}>
           <img src={album.poster} alt={album.name} width="250px" />
-          <p>{album.name}</p>
+          <Typography
+            variant="subtitle2"
+            color={"white"}
+            textTransform={"uppercase"}
+            fontWeight={600}
+          >
+            {album.name}
+          </Typography>
         </Poster>
       ))}
     </Wrapper>

@@ -7,8 +7,9 @@ import Menu from "@mui/material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import { styled } from "@mui/material";
+import { IconButton, styled } from "@mui/material";
 import { NavLink } from "react-router-dom";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const pages = [
   {
@@ -31,6 +32,10 @@ export const Navbar = () => {
   );
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+  };
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
   };
 
   const CustomAppBar = styled(AppBar)`
@@ -73,6 +78,16 @@ export const Navbar = () => {
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon fontSize={'large'}/>
+            </IconButton>
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -93,11 +108,29 @@ export const Navbar = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page.title}</Typography>
+                  <NavLink
+                    style={{ textDecoration: "none" }}
+                    to={`/${page.name}`}
+                  >
+                    <Typography color={'primary'} textAlign="center">{page.title}</Typography>
+                  </NavLink>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              display: { xs: "flex", md: "none" },
+              flexGrow: 1,
+            }}
+          >
+            <img src={require("../assets/logo.png")} width={160} alt="Logo" />
+          </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button key={page.name} onClick={handleCloseNavMenu}>

@@ -21,7 +21,7 @@ const Wrapper = styled("div")`
   max-width: 1440px;
   margin: 0 auto;
   background-color: #181818;
-  height: 100vh;
+  min-height: 100%;
 `;
 
 const App = () => (
