@@ -8,3 +8,9 @@ export type SongType = {
   urlPlay: string;
   year: string;
 };
+
+export type AlbumType = {
+  name: string;
+  poster: string;
+  songs: SongType[];
+};

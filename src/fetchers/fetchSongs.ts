@@ -1,10 +1,10 @@
 import axios from "axios";
-import { SongType } from "../types/songType";
+import { AlbumType } from "../types/musicTypes";
 
-export const fetchTodos = () => {
+export const fetchSongs = () => {
   return axios
-    .get<SongType[]>(
-      "https://jsound-b63bd-default-rtdb.europe-west1.firebasedatabase.app/songs.json"
+    .get<AlbumType[]>(
+      "https://jsound-b63bd-default-rtdb.europe-west1.firebasedatabase.app/.json"
     )
     .then((res) => res.data);
 };

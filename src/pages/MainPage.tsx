@@ -1,5 +1,6 @@
-import { styled, Typography } from "@mui/material";
 import React from "react";
+import { styled, Typography } from "@mui/material";
+import { Albums } from "../components/Albums";
 
 const Wrapper = styled("div")`
   margin: 50px 0 0 30px;
@@ -16,7 +17,7 @@ export const MainPage = () => {
   return (
     <Wrapper>
       <Title variant="h3">Главное</Title>
-      {/* <img src={songs[0]?.img} alt="" /> */}
+      <Albums />
     </Wrapper>
   );
 };

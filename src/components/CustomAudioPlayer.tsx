@@ -3,7 +3,7 @@ import React, { FC, useEffect, useState } from "react";
 import AudioPlayer, { RHAP_UI } from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import "../styles/audioplayer.css";
-import { SongType } from "../types/songType";
+import { SongType } from "../types/musicTypes";
 
 const Wrapper = styled("div")`
   position: fixed;
