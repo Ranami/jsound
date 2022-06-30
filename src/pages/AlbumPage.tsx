@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 import { SongType } from "../types/musicTypes";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
+import { useStore } from "../provider";
 
 type AlbumPageType = {};
 
@@ -29,6 +30,7 @@ const Wrapper = styled("div")`
 
 const Poster = styled(Card)`
   background-color: transparent;
+  cursor: pointer;
 `;
 
 const CustomCardMedia = styled(CardMedia)`
@@ -41,10 +43,21 @@ const CustomCardMedia = styled(CardMedia)`
 
 export const AlbumPage: FC<AlbumPageType> = () => {
   const location = useLocation() as LocationProps;
+
+  const { store } = useStore();
+
+  const handleChooseSong = (song: SongType) => {
+    store.changeCurrentSong(song);
+  };
+
   return (
     <Wrapper>
       {location.state?.map((song: SongType) => (
-        <Poster key={song.rank} sx={{ maxWidth: 250 }}>
+        <Poster
+          key={song.title}
+          sx={{ maxWidth: 250 }}
+          onClick={() => handleChooseSong(song)}
+        >
           <CustomCardMedia
             component={"img"}
             image={song.img}
@@ -69,7 +82,7 @@ export const AlbumPage: FC<AlbumPageType> = () => {
               {song.title}
             </Typography>
           </CardContent>
-          <CardActions sx={{padding: '0px 8px'}} disableSpacing>
+          <CardActions sx={{ padding: "0px 8px" }} disableSpacing>
             <IconButton aria-label="add to favorites">
               <FavoriteIcon sx={{ color: "rgb(233, 30, 99)" }} />
             </IconButton>

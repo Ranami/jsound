@@ -17,6 +17,7 @@ const Image = styled("div")`
   margin-right: 10px;
   & img {
     width: 50px;
+    height: 50px;
   }
 `;
 
@@ -69,7 +70,6 @@ export const CustomAudioPlayer: FC<CustomAudioPlayerType> = ({ song }) => {
           RHAP_UI.MAIN_CONTROLS,
           RHAP_UI.VOLUME_CONTROLS,
         ]}
-        onPlay={(e) => console.log("onPlay")}
         showSkipControls={true}
         showJumpControls={false}
       />

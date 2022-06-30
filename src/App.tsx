@@ -5,6 +5,10 @@ import { Navbar } from "./components/Navbar";
 import { MainPage } from "./pages/MainPage";
 import "./App.css";
 import { AlbumPage } from "./pages/AlbumPage";
+import { AppProvider, useStore } from "./provider";
+import { store } from "./models/Store";
+import { CustomAudioPlayer } from "./components/CustomAudioPlayer";
+import { observer } from "mobx-react-lite";
 
 const theme = createTheme({
   palette: {
@@ -24,20 +28,26 @@ const Wrapper = styled("div")`
   min-height: 100%;
 `;
 
-const App = () => (
-  <BrowserRouter>
-    <Wrapper>
-      <ThemeProvider theme={theme}>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/:album" element={<AlbumPage />} />
-          <Route path="/" element={"Home"} />
-        </Routes>
-        {/* <CustomAudioPlayer song={songs[0]} /> */}
-      </ThemeProvider>
-    </Wrapper>
-  </BrowserRouter>
-);
+const App = observer(() => {
+  const { store } = useStore();
+
+  return (
+    <BrowserRouter>
+      <AppProvider store={store}>
+        <Wrapper>
+          <ThemeProvider theme={theme}>
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<MainPage />} />
+              <Route path="/:album" element={<AlbumPage />} />
+              <Route path="/" element={"Home"} />
+            </Routes>
+            <CustomAudioPlayer song={store.currentSong} />
+          </ThemeProvider>
+        </Wrapper>
+      </AppProvider>
+    </BrowserRouter>
+  );
+});
 
 export default App;
