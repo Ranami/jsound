@@ -10,6 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { IconButton, styled } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
+import SignIn from "./SignIn";
 
 const pages = [
   {
@@ -30,6 +31,10 @@ export const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
@@ -86,7 +91,7 @@ export const Navbar = () => {
               onClick={handleOpenNavMenu}
               color="inherit"
             >
-              <MenuIcon fontSize={'large'}/>
+              <MenuIcon fontSize={"large"} />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -112,7 +117,9 @@ export const Navbar = () => {
                     style={{ textDecoration: "none" }}
                     to={`/${page.name}`}
                   >
-                    <Typography color={'primary'} textAlign="center">{page.title}</Typography>
+                    <Typography color={"primary"} textAlign="center">
+                      {page.title}
+                    </Typography>
                   </NavLink>
                 </MenuItem>
               ))}
@@ -139,9 +146,17 @@ export const Navbar = () => {
             ))}
           </Box>
           <Box>
-          <Button variant={'contained'} sx={{fontSize: '20px', textTransform: 'capitalize'}} color="secondary">Войти</Button>
+            <Button
+              variant={"contained"}
+              sx={{ fontSize: "20px", textTransform: "capitalize" }}
+              color="secondary"
+              onClick={handleOpen}
+            >
+              Войти
+            </Button>
           </Box>
         </Toolbar>
+        <SignIn open={open} onClose={handleClose}/>
       </Container>
     </CustomAppBar>
   );
