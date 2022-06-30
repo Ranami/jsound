@@ -8,7 +8,6 @@ import { SongType } from "../types/musicTypes";
 const Wrapper = styled("div")`
   position: fixed;
   bottom: 0;
-  background-color: rgba(24, 24, 24, 0.8);
   max-width: 1440px;
   width: 100%;
 `;
@@ -23,11 +22,16 @@ const Image = styled("div")`
 
 const Title = styled("div")`
   font-size: 16px;
-  font-weight: bold;
+  margin-bottom: 3px;
+`;
+
+const Artist = styled("div")`
+  font-size: 14px;
 `;
 
 const InfoWrapper = styled("div")`
   text-align: left;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 `;
 
 const SongWrapper = styled("div")`
@@ -54,7 +58,6 @@ export const CustomAudioPlayer: FC<CustomAudioPlayerType> = ({ song }) => {
         src={audio}
         style={{
           textAlign: "center",
-          backgroundColor: "#1B2430",
           color: "white",
         }}
         customControlsSection={[
@@ -64,7 +67,7 @@ export const CustomAudioPlayer: FC<CustomAudioPlayerType> = ({ song }) => {
             </Image>
             <InfoWrapper>
               <Title>{song?.title}</Title>
-              <div>{song?.artist}</div>
+              <Artist>{song?.artist}</Artist>
             </InfoWrapper>
           </SongWrapper>,
           RHAP_UI.MAIN_CONTROLS,
