@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchSongs } from "../fetchers/fetchSongs";
 import { AlbumType, SongType } from "../types/musicTypes";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const Albums = () => {
   const [albums, setAlbums] = useState<AlbumType[]>([]);
@@ -10,6 +11,7 @@ export const Albums = () => {
 
   useEffect(() => {
     fetchSongs().then((data) => setAlbums(data));
+    setTimeout(() => {}, 5000);
   }, []);
 
   const handleNavigate = (album: SongType[]) => {
@@ -34,19 +36,23 @@ export const Albums = () => {
 
   return (
     <Wrapper>
-      {albums.map((album) => (
-        <Poster onClick={() => handleNavigate(album.songs)} key={album.name}>
-          <img src={album.poster} alt={album.name} width="250px" />
-          <Typography
-            variant="subtitle2"
-            color={"white"}
-            textTransform={"uppercase"}
-            fontWeight={600}
-          >
-            {album.name}
-          </Typography>
-        </Poster>
-      ))}
+      {!albums.length ? (
+        <CircularProgress />
+      ) : (
+        albums.map((album) => (
+          <Poster onClick={() => handleNavigate(album.songs)} key={album.name}>
+            <img src={album.poster} alt={album.name} width="250px" />
+            <Typography
+              variant="subtitle2"
+              color={"white"}
+              textTransform={"uppercase"}
+              fontWeight={600}
+            >
+              {album.name}
+            </Typography>
+          </Poster>
+        ))
+      )}
     </Wrapper>
   );
 };
