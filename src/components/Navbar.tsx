@@ -138,6 +138,9 @@ export const Navbar = () => {
               </Button>
             ))}
           </Box>
+          <Box>
+          <Button variant={'contained'} sx={{fontSize: '20px', textTransform: 'capitalize'}} color="secondary">Войти</Button>
+          </Box>
         </Toolbar>
       </Container>
     </CustomAppBar>
