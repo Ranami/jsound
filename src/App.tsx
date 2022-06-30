@@ -9,6 +9,7 @@ import { AppProvider, useStore } from "./provider";
 import { store } from "./models/Store";
 import { CustomAudioPlayer } from "./components/CustomAudioPlayer";
 import { observer } from "mobx-react-lite";
+import { Footer } from "./components/Footer";
 
 const theme = createTheme({
   palette: {
@@ -22,11 +23,17 @@ const theme = createTheme({
 });
 
 const Wrapper = styled("div")`
+  display: flex;
+  flex-direction: column;
   max-width: 1440px;
   margin: 0 auto;
   background-color: #181818;
   min-height: 100%;
 `;
+
+const MainContent = styled('div')`
+  flex: 1 1 auto;
+`
 
 const App = observer(() => {
   const { store } = useStore();
@@ -37,11 +44,14 @@ const App = observer(() => {
         <Wrapper>
           <ThemeProvider theme={theme}>
             <Navbar />
+            <MainContent>
             <Routes>
               <Route path="/" element={<MainPage />} />
               <Route path="/:album" element={<AlbumPage />} />
               <Route path="/" element={"Home"} />
             </Routes>
+            </MainContent>
+            <Footer />
             <CustomAudioPlayer song={store.currentSong} />
           </ThemeProvider>
         </Wrapper>
