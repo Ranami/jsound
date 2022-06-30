@@ -6,7 +6,6 @@ import { MainPage } from "./pages/MainPage";
 import "./App.css";
 import { AlbumPage } from "./pages/AlbumPage";
 import { AppProvider, useStore } from "./provider";
-import { store } from "./models/Store";
 import { CustomAudioPlayer } from "./components/CustomAudioPlayer";
 import { observer } from "mobx-react-lite";
 import { Footer } from "./components/Footer";
@@ -31,9 +30,9 @@ const Wrapper = styled("div")`
   min-height: 100%;
 `;
 
-const MainContent = styled('div')`
+const MainContent = styled("div")`
   flex: 1 1 auto;
-`
+`;
 
 const App = observer(() => {
   const { store } = useStore();
@@ -45,11 +44,11 @@ const App = observer(() => {
           <ThemeProvider theme={theme}>
             <Navbar />
             <MainContent>
-            <Routes>
-              <Route path="/" element={<MainPage />} />
-              <Route path="/:album" element={<AlbumPage />} />
-              <Route path="/" element={"Home"} />
-            </Routes>
+              <Routes>
+                <Route path="/" element={<MainPage />} />
+                <Route path="/:album" element={<AlbumPage />} />
+                <Route path="/" element={"Home"} />
+              </Routes>
             </MainContent>
             <Footer />
             <CustomAudioPlayer song={store.currentSong} />
