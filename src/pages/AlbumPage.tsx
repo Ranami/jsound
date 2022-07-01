@@ -84,7 +84,7 @@ export const AlbumPage: FC<AlbumPageType> = () => {
           </CardContent>
           <CardActions sx={{ padding: "0px 8px" }} disableSpacing>
             <IconButton aria-label="add to favorites">
-              <FavoriteIcon sx={{ color: "rgb(233, 30, 99)" }} />
+              <FavoriteIcon sx={{ color: "rgba(255, 255, 255)" }} />
             </IconButton>
             <IconButton aria-label="share">
               <ShareIcon sx={{ color: "white" }} />
