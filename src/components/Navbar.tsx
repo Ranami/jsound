@@ -11,6 +11,7 @@ import { IconButton, styled } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import SignIn from "./SignIn";
+import { ModalForm } from "./ModalForm";
 
 const pages = [
   {
@@ -156,7 +157,7 @@ export const Navbar = () => {
             </Button>
           </Box>
         </Toolbar>
-        <SignIn open={open} onClose={handleClose}/>
+        <ModalForm open={open} onClose={handleClose} />
       </Container>
     </CustomAppBar>
   );
