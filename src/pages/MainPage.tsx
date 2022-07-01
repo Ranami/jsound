@@ -1,17 +1,7 @@
 import React from "react";
-import { styled, Typography } from "@mui/material";
+import { styled } from "@mui/material";
 import { Albums } from "../components/Albums";
-
-const Wrapper = styled("div")`
-  padding: 50px 30px;
-`;
-
-const Title = styled(Typography)`
-  color: white;
-  display: inline-block;
-  padding-bottom: 8px;
-  border-bottom: 3px solid #ff4810;
-`;
+import { Title, Wrapper } from "../components/styled/components";
 
 export const MainPage = () => {
   return (
