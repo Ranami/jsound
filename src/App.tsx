@@ -9,6 +9,7 @@ import { AppProvider, useStore } from "./provider";
 import { CustomAudioPlayer } from "./components/CustomAudioPlayer";
 import { observer } from "mobx-react-lite";
 import { Footer } from "./components/Footer";
+import { CollectionPage } from "./pages/CollectionPage";
 
 const theme = createTheme({
   palette: {
@@ -46,8 +47,8 @@ const App = observer(() => {
             <MainContent>
               <Routes>
                 <Route path="/" element={<MainPage />} />
-                <Route path="/:album" element={<AlbumPage />} />
-                <Route path="/" element={"Home"} />
+                <Route path="/album" element={<AlbumPage />} />
+                <Route path="/collection" element={<CollectionPage />} />
               </Routes>
             </MainContent>
             <Footer />

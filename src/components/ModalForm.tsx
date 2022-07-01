@@ -22,7 +22,7 @@ export const CustomBox = styled(Box)`
 `;
 
 export const ModalForm = ({ open, onClose }: ModalProps) => {
-  const [isSignIn, setIsSignIn] = useState(false);
+  const [isSignIn, setIsSignIn] = useState(true);
   const handleSwitch = () => {
     setIsSignIn(!isSignIn);
   };

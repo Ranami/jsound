@@ -10,7 +10,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { IconButton, styled } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-import SignIn from "./SignIn";
 import { ModalForm } from "./ModalForm";
 
 const pages = [
@@ -21,10 +20,6 @@ const pages = [
   {
     name: "collection",
     title: "Коллекция",
-  },
-  {
-    name: "newRelease",
-    title: "Новые релизы",
   },
 ];
 
