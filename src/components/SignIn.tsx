@@ -1,5 +1,4 @@
-import React, { FC } from "react";
-import Box from "@mui/material/Box";
+import React from "react";
 import {
   Button,
   FormControl,
@@ -9,6 +8,11 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { FormProps } from "../types/modalPropsTypes";
+import {
+  ModalFooter,
+  ModalSubmitButton,
+  SwitchModalButton,
+} from "./styled/components";
 
 const ButtonGroup = styled("div")`
   display: flex;
@@ -68,20 +72,22 @@ const SignIn = ({ switchForm }: FormProps) => {
             )}
           />
         </FormControl>
-        <ButtonGroup>
-          <Button
-            size={"large"}
-            variant="contained"
-            color={"secondary"}
-            type="submit"
-          >
-            Войти
-          </Button>
-        </ButtonGroup>
+        <ModalSubmitButton
+          sx={{ display: "block", margin: "0 auto" }}
+          size={"large"}
+          variant="contained"
+          color={"secondary"}
+          type="submit"
+        >
+          Войти
+        </ModalSubmitButton>
       </form>
-      <p>
-        Нет аккаунта? <Button onClick={switchForm}>Зарегистрироваться</Button>
-      </p>
+      <ModalFooter>
+        Нет аккаунта?
+        <SwitchModalButton onClick={switchForm}>
+          Зарегистрироваться
+        </SwitchModalButton>
+      </ModalFooter>
     </div>
   );
 };

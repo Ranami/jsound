@@ -1,8 +1,13 @@
 import React, { useCallback } from "react";
 import { Button, FormControl, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { FormProps, ModalProps } from "../types/modalPropsTypes";
+import { FormProps } from "../types/modalPropsTypes";
 import { getFieldState } from "../utils/getFieldState";
+import {
+  ModalFooter,
+  ModalSubmitButton,
+  SwitchModalButton,
+} from "./styled/components";
 
 export type FormValues = {
   name: string;
@@ -24,9 +29,9 @@ const SignUp = ({ switchForm }: FormProps) => {
 
   const onSubmit = useCallback(
     (values: FormValues) => {
-      if(values.password !== values.passwordRepeat) {
+      if (values.password !== values.passwordRepeat) {
         alert("Пароли не совпадают!");
-      }else {
+      } else {
         console.log(values);
         reset();
       }
@@ -69,7 +74,9 @@ const SignUp = ({ switchForm }: FormProps) => {
               required: "Поле обязательное",
               validate: (value) => {
                 if (
-                  /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$/.test(value) ||
+                  /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$/.test(
+                    value
+                  ) ||
                   value.length === 0
                 ) {
                   return true;
@@ -97,7 +104,9 @@ const SignUp = ({ switchForm }: FormProps) => {
               required: "Поле обязательное",
               validate: (value) => {
                 if (
-                  /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$/.test(value) ||
+                  /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$/.test(
+                    value
+                  ) ||
                   value.length === 0
                 ) {
                   return true;
@@ -144,7 +153,7 @@ const SignUp = ({ switchForm }: FormProps) => {
             )}
           />
         </FormControl>
-        <Button
+        <ModalSubmitButton
           sx={{ display: "block", margin: "0 auto" }}
           size={"large"}
           variant="contained"
@@ -152,11 +161,12 @@ const SignUp = ({ switchForm }: FormProps) => {
           type="submit"
         >
           Создать Аккаунт
-        </Button>
+        </ModalSubmitButton>
       </form>
-      <p>
-        Уже есть аккаунт? <Button onClick={switchForm}>Войдите</Button>
-      </p>
+      <ModalFooter>
+        Уже есть аккаунт?
+        <SwitchModalButton onClick={switchForm}>Войдите</SwitchModalButton>
+      </ModalFooter>
     </div>
   );
 };

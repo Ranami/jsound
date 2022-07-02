@@ -1,10 +1,10 @@
 import React from "react";
-import { Title, Wrapper } from "../components/styled/components";
+import { Title, PageWrapper } from "../components/styled/components";
 
 export const CollectionPage = () => {
   return (
-    <Wrapper>
+    <PageWrapper>
       <Title variant="h3">Моя коллекция</Title>
-    </Wrapper>
+    </PageWrapper>
   );
 };

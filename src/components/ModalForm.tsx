@@ -1,11 +1,11 @@
-import { Box, FormControl, Modal, styled, Typography } from "@mui/material";
+import { Box, Button, Modal, styled } from "@mui/material";
 import React, { useState } from "react";
-import { Controller } from "react-hook-form";
 import { ModalProps } from "../types/modalPropsTypes";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
+import CloseIcon from "@mui/icons-material/Close";
 
-export const CustomBox = styled(Box)`
+const CustomBox = styled(Box)`
   max-width: 300px;
   position: absolute;
   top: 50%;
@@ -19,6 +19,26 @@ export const CustomBox = styled(Box)`
   align-items: center;
   padding: 24px 40px;
   gap: 26px;
+`;
+
+const CustomButton = styled(Button)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 10px;
+  &:hover {
+    background-color: transparent;
+  }
+`;
+
+const CustomCloseIcon = styled(CloseIcon)`
+  color: #ff4810;
+  &:hover {
+    color: #ff4810b9;
+  }
+  &:focus {
+    background-color: transparent;
+  }
 `;
 
 export const ModalForm = ({ open, onClose }: ModalProps) => {
@@ -36,6 +56,9 @@ export const ModalForm = ({ open, onClose }: ModalProps) => {
       aria-describedby="keep-mounted-modal-description"
     >
       <CustomBox>
+        <CustomButton onClick={onClose}>
+          <CustomCloseIcon />
+        </CustomButton>
         {isSignIn ? (
           <SignIn switchForm={handleSwitch} />
         ) : (
