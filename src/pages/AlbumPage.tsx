@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import React, { FC } from "react";
 import { useLocation } from "react-router-dom";
-import { SongType } from "../types/musicTypes";
+import { AlbumType, SongType } from "../types/musicTypes";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import { useStore } from "../provider";
@@ -17,7 +17,7 @@ import { useStore } from "../provider";
 type AlbumPageType = {};
 
 type LocationProps = {
-  state: SongType[];
+  state: AlbumType;
 };
 
 const Wrapper = styled("div")`
@@ -47,12 +47,13 @@ export const AlbumPage: FC<AlbumPageType> = () => {
   const { store } = useStore();
 
   const handleChooseSong = (song: SongType) => {
+    store.setAlbum(location.state);
     store.changeCurrentSong(song);
   };
 
   return (
     <Wrapper>
-      {location.state?.map((song: SongType) => (
+      {location.state.songs?.map((song: SongType) => (
         <Poster
           key={song.title}
           sx={{ maxWidth: 250 }}
