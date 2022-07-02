@@ -19,15 +19,24 @@ const CustomBox = styled(Box)`
   align-items: center;
   padding: 24px 40px;
   gap: 26px;
+  @media (max-width: 480px) {
+    max-width: calc(100% - 50px);
+    width: 100%;
+    margin-top: 20px;
+    height: 100%;
+  }
 `;
 
-const CustomButton = styled(Button)`
+const CustomCloseButton = styled(Button)`
   position: absolute;
   top: 0;
   right: 0;
   min-width: 10px;
   &:hover {
     background-color: transparent;
+  }
+  @media (max-width: 480px) {
+    right: 8px;
   }
 `;
 
@@ -56,9 +65,9 @@ export const ModalForm = ({ open, onClose }: ModalProps) => {
       aria-describedby="keep-mounted-modal-description"
     >
       <CustomBox>
-        <CustomButton onClick={onClose}>
+        <CustomCloseButton onClick={onClose}>
           <CustomCloseIcon />
-        </CustomButton>
+        </CustomCloseButton>
         {isSignIn ? (
           <SignIn switchForm={handleSwitch} />
         ) : (
