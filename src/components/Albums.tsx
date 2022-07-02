@@ -4,23 +4,29 @@ import { useNavigate } from "react-router-dom";
 import { fetchSongs } from "../fetchers/fetchSongs";
 import { AlbumType, SongType } from "../types/musicTypes";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useStore } from "../provider";
+import { observer } from "mobx-react-lite";
 
-export const Albums = () => {
-  const [albums, setAlbums] = useState<AlbumType[]>([]);
+export const Albums = observer(() => {
   const navigate = useNavigate();
+  const [albums, setAlbums] = useState<AlbumType[]>();
   const [imagesLoaded, setImagesLoaded] = useState<boolean>(false);
+  const { store } = useStore();
 
   useEffect(() => {
-    fetchSongs().then((data) => setAlbums(data));
+    fetchSongs().then((data) => {
+      store.uploadAlbums(data);
+      setAlbums(data);
+    });
   }, []);
 
   useEffect(() => {
-    if (!albums.length) return;
+    if (!albums?.length) return;
 
     const loadImage = (image: AlbumType) => {
       return new Promise((resolve, reject) => {
         const loadImg = new Image();
-        loadImg.src = image.poster;
+        loadImg.src = image.poster!;
         loadImg.onload = () => resolve(image.poster);
         loadImg.onerror = (err) => reject(err);
       });
@@ -28,9 +34,9 @@ export const Albums = () => {
     Promise.all(albums.map((album) => loadImage(album)))
       .then(() => setImagesLoaded(true))
       .catch((err) => console.log("Failed to load images", err));
-  }, [albums]);
+  }, [store.albums]);
 
-  const handleNavigate = (album: SongType[]) => {
+  const handleNavigate = (album: AlbumType) => {
     navigate("/album", { state: album });
   };
 
@@ -59,8 +65,8 @@ export const Albums = () => {
       {!imagesLoaded ? (
         <CustomCircularProgress />
       ) : (
-        albums.map((album) => (
-          <Poster onClick={() => handleNavigate(album.songs)} key={album.name}>
+        albums?.map((album) => (
+          <Poster onClick={() => handleNavigate(album)} key={album.name}>
             <img src={album.poster} alt={album.name} width="250px" />
             <Typography
               variant="subtitle2"
@@ -75,4 +81,4 @@ export const Albums = () => {
       )}
     </Wrapper>
   );
-};
+});

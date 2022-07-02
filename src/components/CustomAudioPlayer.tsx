@@ -2,6 +2,7 @@ import { styled } from "@mui/material";
 import React, { FC, useEffect, useState } from "react";
 import AudioPlayer, { RHAP_UI } from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
+import { useStore } from "../provider";
 import "../styles/audioplayer.css";
 import { SongType } from "../types/musicTypes";
 
@@ -47,10 +48,19 @@ type CustomAudioPlayerType = {
 
 export const CustomAudioPlayer: FC<CustomAudioPlayerType> = ({ song }) => {
   const [audio, setAudio] = useState(song?.urlPlay);
+  const { store } = useStore();
 
   useEffect(() => {
     setAudio(song?.urlPlay);
   }, [song]);
+
+  const handleClickNext = () => {
+    store.switchToNextSong();
+  };
+
+  const handleClickPrevious = () => {
+    store.switchToPreviousSong();
+  };
 
   return (
     <Wrapper>
@@ -60,6 +70,8 @@ export const CustomAudioPlayer: FC<CustomAudioPlayerType> = ({ song }) => {
           textAlign: "center",
           color: "white",
         }}
+        onClickNext={() => handleClickNext()}
+        onClickPrevious={() => handleClickPrevious()}
         customControlsSection={[
           <SongWrapper>
             <Image>

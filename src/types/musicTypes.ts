@@ -10,7 +10,7 @@ export type SongType = {
 };
 
 export type AlbumType = {
-  name: string;
-  poster: string;
-  songs: SongType[];
+  name?: string;
+  poster?: string;
+  songs?: SongType[];
 };
