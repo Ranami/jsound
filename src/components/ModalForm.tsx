@@ -65,7 +65,7 @@ export const ModalForm = ({ open, onClose }: ModalProps) => {
       aria-describedby="keep-mounted-modal-description"
     >
       <CustomBox>
-        <CustomCloseButton onClick={onClose}>
+        <CustomCloseButton onClick={onClose} disableRipple>
           <CustomCloseIcon />
         </CustomCloseButton>
         {isSignIn ? (
