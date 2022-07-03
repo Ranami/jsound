@@ -73,7 +73,7 @@ export const CustomAudioPlayer: FC<CustomAudioPlayerType> = observer(
   ({ song }) => {
     const { store } = useStore();
     const [audio, setAudio] = useState(
-      JSON.parse(localStorage.getItem("currentSong")!).url || ""
+      JSON.parse(localStorage.getItem("currentSong")!)?.url || ""
     );
     useEffect(() => {
       setAudio(store.currentSong.urlPlay);
