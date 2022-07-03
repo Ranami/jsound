@@ -40,12 +40,21 @@ const SignIn = ({ switchForm }: FormProps) => {
         // Signed in
         const user = userCredential.user;
         console.log(user);
+        db.collection("users")
+          .doc(userCredential.user.uid)
+          .get()
+          .then((doc) => {
+            store.changeCurrentSong(doc.data()?.currentSong || {});
+            store.setAlbum(doc.data()?.currentAlbum || {});
+            console.log(doc.data()?.currentAlbum);
+          });
         // ...
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
       });
+
     store.setModalOpen(false);
   };
 

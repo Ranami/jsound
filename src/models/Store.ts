@@ -1,5 +1,5 @@
 import { AlbumType, SongType } from "./../types/musicTypes";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, toJS } from "mobx";
 
 export class Store {
   currentSong: SongType =
@@ -7,9 +7,29 @@ export class Store {
   albums: AlbumType[] = [];
   album?: AlbumType = JSON.parse(localStorage.getItem("currentAlbum")!) || {};
   modalOpen: boolean = false;
+  favourite: AlbumType = JSON.parse(localStorage.getItem("favourite")!) || {
+    name: "Favourite",
+    songs: [],
+  };
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  addToFavourite(song: SongType) {
+    const fav = { ...this.favourite };
+
+    if (
+      !toJS(this.favourite).songs?.some((favsong) => favsong.url === song.url)
+    ) {
+      fav.songs = [...this.favourite.songs!, song];
+      this.favourite = { ...fav };
+      localStorage.setItem("favourite", JSON.stringify(this.favourite));
+    } else {
+      let result = fav.songs?.filter((favsong) => favsong.url !== song.url);
+      this.favourite = { ...fav, songs: result };
+      localStorage.setItem("favourite", JSON.stringify(this.favourite));
+    }
   }
 
   setModalOpen(flag: boolean) {

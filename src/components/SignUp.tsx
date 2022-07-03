@@ -42,12 +42,21 @@ const SignUp = ({ switchForm }: FormProps) => {
           values.email,
           values.password
         ).then((cred) => {
-          return db.collection("users").doc(cred.user.uid).set({
-            name: values.name,
-          });
+          return db
+            .collection("users")
+            .doc(cred.user.uid)
+            .set({
+              name: values.name,
+              currentSong:
+                JSON.parse(localStorage.getItem("currentSong")!) || {},
+              currentAlbum:
+                JSON.parse(localStorage.getItem("currentAlbum")!) || {},
+              favourite: [],
+            });
         });
         reset();
       }
+
       store.setModalOpen(false);
     },
     [reset]

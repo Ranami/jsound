@@ -11,7 +11,7 @@ import { NavLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { ModalForm } from "./ModalForm";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../utils/firebase";
+import { auth, db } from "../utils/firebase";
 import { useEffect, useState } from "react";
 import { useStore } from "../provider";
 import { observer } from "mobx-react-lite";
@@ -65,6 +65,12 @@ export const Navbar = observer(() => {
   `;
 
   const logout = () => {
+    db.collection("users")
+      .doc(auth.currentUser?.uid)
+      .update({
+        currentSong: JSON.parse(localStorage.getItem("currentSong")!),
+        currentAlbum: JSON.parse(localStorage.getItem("currentAlbum")!),
+      });
     signOut(auth);
   };
   return (
