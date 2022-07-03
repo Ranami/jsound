@@ -1,4 +1,4 @@
-import { styled, Typography } from "@mui/material";
+import { Grid, styled, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchSongs } from "../fetchers/fetchSongs";
@@ -77,19 +77,28 @@ export const Albums = observer(() => {
       {!imagesLoaded ? (
         <CustomCircularProgress />
       ) : (
-        albums?.map((album) => (
-          <Poster onClick={() => handleNavigate(album)} key={album.name}>
-            <Img src={album.poster} alt={album.name} />
-            <Typography
-              variant="subtitle2"
-              color={"white"}
-              textTransform={"uppercase"}
-              fontWeight={600}
-            >
-              {album.name}
-            </Typography>
-          </Poster>
-        ))
+        <Grid
+          container
+          justifyContent={{ xs: "center", lg: "center", md: "left" }}
+          columns={{ xs: 4, md: 12 }}
+          spacing={{ xs: 3, md: 4 }}
+        >
+          {albums?.map((album) => (
+            <Grid item key={album.name}>
+              <Poster onClick={() => handleNavigate(album)}>
+                <Img src={album.poster} alt={album.name} />
+                <Typography
+                  variant="subtitle2"
+                  color={"white"}
+                  textTransform={"uppercase"}
+                  fontWeight={600}
+                >
+                  {album.name}
+                </Typography>
+              </Poster>
+            </Grid>
+          ))}
+        </Grid>
       )}
     </Wrapper>
   );

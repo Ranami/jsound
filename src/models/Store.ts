@@ -26,7 +26,7 @@ export class Store {
     localStorage.setItem("favourite", JSON.stringify(this.favourite));
   }
 
-  addToFavourite(song: SongType) {
+  addToFavourite(song: SongType, choosenAlbum: AlbumType) {
     const fav = { ...this.favourite };
 
     if (
@@ -39,6 +39,11 @@ export class Store {
       let result = fav.songs?.filter((favsong) => favsong.url !== song.url);
       this.favourite = { ...fav, songs: result };
       localStorage.setItem("favourite", JSON.stringify(this.favourite));
+    }
+
+    if (choosenAlbum.name === "Favourite") {
+      this.album = { ...this.favourite };
+      localStorage.setItem("currentAlbum", JSON.stringify(this.album));
     }
   }
 
