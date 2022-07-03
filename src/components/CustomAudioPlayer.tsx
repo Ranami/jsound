@@ -98,6 +98,7 @@ export const CustomAudioPlayer: FC<CustomAudioPlayerType> = observer(
             }}
             onClickNext={handleClickNext}
             onClickPrevious={handleClickPrevious}
+            onEnded={handleClickNext}
             customControlsSection={[
               <SongWrapper>
                 <Image>
