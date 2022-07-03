@@ -15,7 +15,7 @@ type LocationProps = {
   state: AlbumType;
 };
 
-export const AlbumPage: FC<AlbumPageType> = observer(() => {
+export const AlbumPage: FC<AlbumPageType> = () => {
   const location = useLocation() as LocationProps;
 
   return (
@@ -26,4 +26,4 @@ export const AlbumPage: FC<AlbumPageType> = observer(() => {
       </SongsWrapper>
     </PageWrapper>
   );
-});
+};
