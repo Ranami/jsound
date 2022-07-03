@@ -7,6 +7,7 @@ export class Store {
   albums: AlbumType[] = [];
   album?: AlbumType = JSON.parse(localStorage.getItem("currentAlbum")!) || {};
   modalOpen: boolean = false;
+  autoplay: boolean = true;
   favourite: AlbumType = JSON.parse(localStorage.getItem("favourite")!) || {
     name: "Favourite",
     songs: [],
@@ -16,7 +17,24 @@ export class Store {
     makeAutoObservable(this);
   }
 
-  addToFavourite(song: SongType) {
+  setAutoplayToTrue() {
+    this.autoplay = true;
+  }
+  setAutoplayToFalse() {
+    this.autoplay = false;
+  }
+
+  cleanFavourite() {
+    this.favourite = { name: "Favourite", songs: [] };
+    localStorage.removeItem("favourite");
+  }
+
+  setFavourite(album: AlbumType) {
+    this.favourite = album;
+    localStorage.setItem("favourite", JSON.stringify(this.favourite));
+  }
+
+  addToFavourite(song: SongType, choosenAlbum: AlbumType) {
     const fav = { ...this.favourite };
 
     if (
@@ -29,6 +47,11 @@ export class Store {
       let result = fav.songs?.filter((favsong) => favsong.url !== song.url);
       this.favourite = { ...fav, songs: result };
       localStorage.setItem("favourite", JSON.stringify(this.favourite));
+    }
+
+    if (choosenAlbum.name === "Favourite") {
+      this.album = { ...this.favourite };
+      localStorage.setItem("currentAlbum", JSON.stringify(this.album));
     }
   }
 
@@ -51,6 +74,7 @@ export class Store {
   }
 
   switchToNextSong() {
+    this.setAutoplayToTrue();
     let nextSong;
     let currentIndex = this.album?.songs?.findIndex(
       (item) => item.url === this.currentSong.url
@@ -64,6 +88,7 @@ export class Store {
   }
 
   switchToPreviousSong() {
+    this.setAutoplayToTrue();
     let nextSong;
     let currentIndex = this.album?.songs?.findIndex(
       (item) => item.url === this.currentSong.url

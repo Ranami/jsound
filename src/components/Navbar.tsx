@@ -71,9 +71,12 @@ export const Navbar = observer(() => {
       .update({
         currentSong: JSON.parse(localStorage.getItem("currentSong")!),
         currentAlbum: JSON.parse(localStorage.getItem("currentAlbum")!),
+        favourite: JSON.parse(localStorage.getItem("favourite")!),
       });
+
+    store.cleanFavourite();
     signOut(auth);
-    navigate('/')
+    navigate("/");
   };
   return (
     <CustomAppBar position="static">
@@ -166,11 +169,16 @@ export const Navbar = observer(() => {
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
+              alignItems: "center",
               flexGrow: 1,
             }}
           >
             <NavLink to={`/`}>
-              <img src={require("../assets/logo.png")} width={160} alt="Logo" />
+              <img
+                src={require("../assets/minilogo.png")}
+                width={60}
+                alt="Logo"
+              />
             </NavLink>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>

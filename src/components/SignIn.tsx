@@ -32,16 +32,17 @@ const SignIn = ({ switchForm }: FormProps) => {
   const submitHandler = useCallback(({ email, password }: ValueProps) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
-        console.log(user);
         db.collection("users")
           .doc(userCredential.user.uid)
           .get()
           .then((doc) => {
             store.changeCurrentSong(doc.data()?.currentSong || {});
             store.setAlbum(doc.data()?.currentAlbum || {});
-            console.log(doc.data()?.currentAlbum);
+            store.setFavourite(
+              doc.data()?.favourite || { name: "Favourite", songs: [] }
+            );
+            store.setAutoplayToFalse();
           });
       })
       .catch((error) => {
