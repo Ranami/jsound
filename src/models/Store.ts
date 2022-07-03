@@ -7,6 +7,7 @@ export class Store {
   albums: AlbumType[] = [];
   album?: AlbumType = JSON.parse(localStorage.getItem("currentAlbum")!) || {};
   modalOpen: boolean = false;
+  autoplay: boolean = true;
   favourite: AlbumType = JSON.parse(localStorage.getItem("favourite")!) || {
     name: "Favourite",
     songs: [],
@@ -14,6 +15,13 @@ export class Store {
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  setAutoplayToTrue() {
+    this.autoplay = true;
+  }
+  setAutoplayToFalse() {
+    this.autoplay = false;
   }
 
   cleanFavourite() {
@@ -66,6 +74,7 @@ export class Store {
   }
 
   switchToNextSong() {
+    this.setAutoplayToTrue();
     let nextSong;
     let currentIndex = this.album?.songs?.findIndex(
       (item) => item.url === this.currentSong.url
@@ -79,6 +88,7 @@ export class Store {
   }
 
   switchToPreviousSong() {
+    this.setAutoplayToTrue();
     let nextSong;
     let currentIndex = this.album?.songs?.findIndex(
       (item) => item.url === this.currentSong.url

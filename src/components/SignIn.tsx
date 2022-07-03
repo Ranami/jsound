@@ -38,7 +38,6 @@ const SignIn = ({ switchForm }: FormProps) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log(user);
         db.collection("users")
           .doc(userCredential.user.uid)
           .get()
@@ -48,6 +47,7 @@ const SignIn = ({ switchForm }: FormProps) => {
             store.setFavourite(
               doc.data()?.favourite || { name: "Favourite", songs: [] }
             );
+            store.setAutoplayToFalse();
           });
       })
       .catch((error) => {
