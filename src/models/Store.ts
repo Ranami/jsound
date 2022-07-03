@@ -16,6 +16,16 @@ export class Store {
     makeAutoObservable(this);
   }
 
+  cleanFavourite() {
+    this.favourite = { name: "Favourite", songs: [] };
+    localStorage.removeItem("favourite");
+  }
+
+  setFavourite(album: AlbumType) {
+    this.favourite = album;
+    localStorage.setItem("favourite", JSON.stringify(this.favourite));
+  }
+
   addToFavourite(song: SongType) {
     const fav = { ...this.favourite };
 

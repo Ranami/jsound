@@ -7,7 +7,7 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { Drawer, IconButton, styled } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { ModalForm } from "./ModalForm";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -20,6 +20,7 @@ export const Navbar = observer(() => {
   const { store } = useStore();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [isLogged, setIsLogged] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpen = () => store.setModalOpen(true);
   const handleClose = () => store.setModalOpen(false);
@@ -70,8 +71,12 @@ export const Navbar = observer(() => {
       .update({
         currentSong: JSON.parse(localStorage.getItem("currentSong")!),
         currentAlbum: JSON.parse(localStorage.getItem("currentAlbum")!),
+        favourite: JSON.parse(localStorage.getItem("favourite")!),
       });
+
+    store.cleanFavourite();
     signOut(auth);
+    navigate("/");
   };
   return (
     <CustomAppBar position="static">

@@ -37,7 +37,6 @@ const SignIn = ({ switchForm }: FormProps) => {
   const submitHandler = ({ email, password }: ValueProps) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
         console.log(user);
         db.collection("users")
@@ -46,9 +45,10 @@ const SignIn = ({ switchForm }: FormProps) => {
           .then((doc) => {
             store.changeCurrentSong(doc.data()?.currentSong || {});
             store.setAlbum(doc.data()?.currentAlbum || {});
-            console.log(doc.data()?.currentAlbum);
+            store.setFavourite(
+              doc.data()?.favourite || { name: "Favourite", songs: [] }
+            );
           });
-        // ...
       })
       .catch((error) => {
         const errorCode = error.code;
