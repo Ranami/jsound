@@ -11,26 +11,14 @@ import { NavLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { ModalForm } from "./ModalForm";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth, db } from "../utils/firebase";
+import { auth } from "../utils/firebase";
 import { useEffect, useState } from "react";
 import { useStore } from "../provider";
 import { observer } from "mobx-react-lite";
 
-const pages = [
-  {
-    name: "",
-    title: "Главное",
-  },
-  {
-    name: "collection",
-    title: "Коллекция",
-  },
-];
-
 export const Navbar = observer(() => {
   const { store } = useStore();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  // const [open, setOpen] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
 
   const handleOpen = () => store.setModalOpen(true);
@@ -44,7 +32,7 @@ export const Navbar = observer(() => {
         setIsLogged(false);
       }
     });
-  }, [auth.currentUser]);
+  });
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -120,9 +108,26 @@ export const Navbar = observer(() => {
                 sx: { width: "75%" },
               }}
             >
-              {pages.map((page) => (
+              <MenuItem
+                onClick={handleCloseNavMenu}
+                sx={{
+                  borderBottom: { xs: "3px solid #ff4810" },
+                }}
+              >
+                <NavLink style={{ textDecoration: "none" }} to={`/`}>
+                  <Typography
+                    color={"primary"}
+                    sx={{
+                      width: "100%",
+                      fontSize: { xs: "24px", md: "16px" },
+                    }}
+                  >
+                    Главное
+                  </Typography>
+                </NavLink>
+              </MenuItem>
+              {isLogged && (
                 <MenuItem
-                  key={page.name}
                   onClick={handleCloseNavMenu}
                   sx={{
                     borderBottom: { xs: "3px solid #ff4810" },
@@ -130,7 +135,7 @@ export const Navbar = observer(() => {
                 >
                   <NavLink
                     style={{ textDecoration: "none" }}
-                    to={`/${page.name}`}
+                    to={`/collection`}
                   >
                     <Typography
                       color={"primary"}
@@ -139,11 +144,11 @@ export const Navbar = observer(() => {
                         fontSize: { xs: "24px", md: "16px" },
                       }}
                     >
-                      {page.title}
+                      Коллекция
                     </Typography>
                   </NavLink>
                 </MenuItem>
-              ))}
+              )}
             </Drawer>
           </Box>
 
@@ -161,11 +166,15 @@ export const Navbar = observer(() => {
             </NavLink>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button key={page.name} onClick={handleCloseNavMenu}>
-                <CustomNavLink to={`/${page.name}`}>{page.title}</CustomNavLink>
+            <Button onClick={handleCloseNavMenu}>
+              <CustomNavLink to={`/`}>Главное</CustomNavLink>
+            </Button>
+
+            {isLogged && (
+              <Button onClick={handleCloseNavMenu}>
+                <CustomNavLink to={`/collection`}>Коллекция</CustomNavLink>
               </Button>
-            ))}
+            )}
           </Box>
           <Box>
             {isLogged ? (
