@@ -8,6 +8,8 @@ import {
   ModalSubmitButton,
   SwitchModalButton,
 } from "./styled/components";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 export type FormValues = {
   name: string;
@@ -17,7 +19,7 @@ export type FormValues = {
 };
 
 const SignUp = ({ switchForm }: FormProps) => {
-  const { handleSubmit, control, reset } = useForm<FormValues>({
+  const { handleSubmit, control, reset, register } = useForm<FormValues>({
     mode: "onChange",
     defaultValues: {
       name: "",
@@ -33,6 +35,11 @@ const SignUp = ({ switchForm }: FormProps) => {
         alert("Пароли не совпадают!");
       } else {
         console.log(values);
+        createUserWithEmailAndPassword(
+          auth,
+          values.email,
+          values.password,
+        );
         reset();
       }
     },

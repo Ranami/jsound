@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FormControl, styled, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { FormProps } from "../types/modalPropsTypes";
@@ -7,6 +7,8 @@ import {
   ModalSubmitButton,
   SwitchModalButton,
 } from "./styled/components";
+import { getFieldState } from "../utils/getFieldState";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const ButtonGroup = styled("div")`
   display: flex;
@@ -14,36 +16,69 @@ const ButtonGroup = styled("div")`
   align-items: center;
 `;
 
+type ValueProps = {
+  email: string;
+  password: string;
+};
+
 const SignIn = ({ switchForm }: FormProps) => {
   const { handleSubmit, control, reset } = useForm({
     mode: "onChange",
     defaultValues: {
-      name: "",
+      email: "",
       password: "",
-      //   phone: "",
-      //   email: "",
     },
   });
+
+  const submitHandler = ({ email, password }: ValueProps) => {
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user)
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  };
+
 
   return (
     <div>
       <Typography textAlign={"center"} variant="h5">
         Войти в аккаунт
       </Typography>
-      <form style={{ marginTop: "20px" }}>
+      <form
+        style={{ marginTop: "20px" }}
+        onSubmit={handleSubmit(submitHandler)}
+      >
         <FormControl fullWidth sx={{ mb: 2 }}>
           <Controller
-            name="name"
+            name="email"
             control={control}
             rules={{
-              validate: (value) => {
-                if (value.length < 3) return "Type more than 3 symbols";
-                return true;
-              },
               required: "Поле обязательное",
+              validate: (value) => {
+                if (
+                  /^[\w\.-]+@[a-zA-Z]+?\.[a-zA-Z]{2,3}$/.test(value) ||
+                  value.length === 0
+                ) {
+                  return true;
+                } else {
+                  return "Please type valid email";
+                }
+              },
             }}
-            render={() => (
-              <TextField id="outlined-basic" label="Имя" variant="outlined" />
+            render={({ field, fieldState, formState }) => (
+              <TextField
+                label="Введите почту"
+                variant="outlined"
+                {...field}
+                {...getFieldState({ formState, fieldState })}
+              />
             )}
           />
         </FormControl>
@@ -53,15 +88,26 @@ const SignIn = ({ switchForm }: FormProps) => {
             control={control}
             rules={{
               required: "Поле обязательное",
-              // validate: (value) => {
-
-              // },
+              validate: (value) => {
+                if (
+                  /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$/.test(
+                    value
+                  ) ||
+                  value.length === 0
+                ) {
+                  return true;
+                } else {
+                  return "Please type valid password";
+                }
+              },
             }}
-            render={() => (
+            render={({ field, fieldState, formState }) => (
               <TextField
-                id="outlined-basic"
                 label="Введите пароль"
+                type="password"
                 variant="outlined"
+                {...field}
+                {...getFieldState({ formState, fieldState })}
               />
             )}
           />
