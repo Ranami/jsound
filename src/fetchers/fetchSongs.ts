@@ -8,9 +8,3 @@ export const fetchSongs = () => {
     )
     .then((res) => res.data);
 };
-
-export const createUser= () => {
-  return axios.post(
-    ""
-  )
-};

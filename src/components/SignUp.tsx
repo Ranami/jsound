@@ -8,7 +8,10 @@ import {
   ModalSubmitButton,
   SwitchModalButton,
 } from "./styled/components";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
+} from "firebase/auth";
 import { auth, db } from "../utils/firebase";
 import { useStore } from "../provider";
 
@@ -37,23 +40,35 @@ const SignUp = ({ switchForm }: FormProps) => {
       if (values.password !== values.passwordRepeat) {
         alert("Пароли не совпадают!");
       } else {
-        createUserWithEmailAndPassword(
-          auth,
-          values.email,
-          values.password
-        ).then((cred) => {
-          return db
-            .collection("users")
-            .doc(cred.user.uid)
-            .set({
-              name: values.name,
-              currentSong:
-                JSON.parse(localStorage.getItem("currentSong")!) || {},
-              currentAlbum:
-                JSON.parse(localStorage.getItem("currentAlbum")!) || {},
-              favourite: [],
-            });
-        });
+        createUserWithEmailAndPassword(auth, values.email, values.password)
+          .then((cred) => {
+            return db
+              .collection("users")
+              .doc(cred.user.uid)
+              .set({
+                name: values.name,
+                currentSong:
+                  JSON.parse(localStorage.getItem("currentSong")!) || {},
+                currentAlbum:
+                  JSON.parse(localStorage.getItem("currentAlbum")!) || {},
+                favourite: [],
+              });
+          })
+          .catch((error) => {
+            if (error.code === "auth/email-already-in-use") {
+              console.error(error.message);
+              alert("The email address is already in use");
+            } else if (error.code === "auth/invalid-email") {
+              console.error(error.message);
+              alert("The email address is not valid.");
+            } else if (error.code === "auth/operation-not-allowed") {
+              console.error(error.message);
+              alert("Operation not allowed.");
+            } else if (error.code === "auth/weak-password") {
+              console.error(error.message);
+              alert("The password is too weak.");
+            }
+          });
         reset();
       }
 
@@ -78,6 +93,7 @@ const SignUp = ({ switchForm }: FormProps) => {
                 return true;
               },
               required: "Поле обязательное",
+              
             }}
             render={({ field, fieldState, formState }) => (
               <TextField
@@ -104,7 +120,7 @@ const SignUp = ({ switchForm }: FormProps) => {
                 ) {
                   return true;
                 } else {
-                  return "Please type valid password";
+                  return "The password must be at least 8 characters, include letters, numbers and special characters";
                 }
               },
             }}
@@ -116,6 +132,7 @@ const SignUp = ({ switchForm }: FormProps) => {
                 {...field}
                 {...getFieldState({ formState, fieldState })}
               />
+              
             )}
           />
         </FormControl>
