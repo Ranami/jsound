@@ -2,7 +2,7 @@ import { styled, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchSongs } from "../fetchers/fetchSongs";
-import { AlbumType, SongType } from "../types/musicTypes";
+import { AlbumType } from "../types/musicTypes";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useStore } from "../provider";
 import { observer } from "mobx-react-lite";
@@ -18,7 +18,7 @@ export const Albums = observer(() => {
       store.uploadAlbums(data);
       setAlbums(data);
     });
-  }, []);
+  }, [store]);
 
   useEffect(() => {
     if (!albums?.length) return;
@@ -34,7 +34,7 @@ export const Albums = observer(() => {
     Promise.all(albums.map((album) => loadImage(album)))
       .then(() => setImagesLoaded(true))
       .catch((err) => console.log("Failed to load images", err));
-  }, [store.albums]);
+  }, [store.albums, albums]);
 
   const handleNavigate = (album: AlbumType) => {
     navigate("/album", { state: album });
@@ -46,6 +46,7 @@ export const Albums = observer(() => {
     flex-wrap: wrap;
     justify-content: center;
     gap: 30px;
+    position: relative;
   `;
 
   const Poster = styled("div")`
@@ -56,8 +57,19 @@ export const Albums = observer(() => {
     cursor: pointer;
   `;
 
+  const Img = styled("img")`
+    width: 250px;
+    @media (max-width: 768px) {
+      width: 200px;
+    }
+  `;
+
   const CustomCircularProgress = styled(CircularProgress)`
     color: white;
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(-50%, -50%);
   `;
 
   return (
@@ -67,7 +79,7 @@ export const Albums = observer(() => {
       ) : (
         albums?.map((album) => (
           <Poster onClick={() => handleNavigate(album)} key={album.name}>
-            <img src={album.poster} alt={album.name} width="250px" />
+            <Img src={album.poster} alt={album.name} />
             <Typography
               variant="subtitle2"
               color={"white"}

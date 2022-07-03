@@ -3,11 +3,10 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import { IconButton, styled } from "@mui/material";
+import { Drawer, IconButton, styled } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { ModalForm } from "./ModalForm";
@@ -65,18 +64,18 @@ export const Navbar = () => {
     <CustomAppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-            }}
-          >
-            <img src={require("../assets/logo.png")} alt="Logo" />
-          </Typography>
+          <NavLink to={`/`}>
+            <Typography
+              variant="h6"
+              noWrap
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+              }}
+            >
+              <img src={require("../assets/logo.png")} alt="Logo" />
+            </Typography>
+          </NavLink>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -89,50 +88,58 @@ export const Navbar = () => {
             >
               <MenuIcon fontSize={"large"} />
             </IconButton>
-            <Menu
+            <Drawer
               id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
               keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
+              anchor="left"
               sx={{
                 display: { xs: "block", md: "none" },
               }}
+              PaperProps={{
+                sx: { width: "75%" },
+              }}
             >
               {pages.map((page) => (
-                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                <MenuItem
+                  key={page.name}
+                  onClick={handleCloseNavMenu}
+                  sx={{
+                    borderBottom: { xs: "3px solid #ff4810" },
+                  }}
+                >
                   <NavLink
                     style={{ textDecoration: "none" }}
                     to={`/${page.name}`}
                   >
-                    <Typography color={"primary"} textAlign="center">
+                    <Typography
+                      color={"primary"}
+                      sx={{
+                        width: "100%",
+                        fontSize: { xs: "24px", md: "16px" },
+                      }}
+                    >
                       {page.title}
                     </Typography>
                   </NavLink>
                 </MenuItem>
               ))}
-            </Menu>
+            </Drawer>
           </Box>
+
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
               flexGrow: 1,
             }}
           >
-            <img src={require("../assets/logo.png")} width={160} alt="Logo" />
+            <NavLink to={`/`}>
+              <img src={require("../assets/logo.png")} width={160} alt="Logo" />
+            </NavLink>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
