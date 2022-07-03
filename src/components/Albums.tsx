@@ -1,5 +1,5 @@
 import { Grid, styled, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchSongs } from "../fetchers/fetchSongs";
 import { AlbumType } from "../types/musicTypes";
@@ -20,25 +20,29 @@ export const Albums = observer(() => {
     });
   }, [store]);
 
+  const loadImage = useCallback((image: AlbumType) => {
+    return new Promise((resolve, reject) => {
+      const loadImg = new Image();
+      loadImg.src = image.poster!;
+      loadImg.onload = () => resolve(image.poster);
+      loadImg.onerror = (err) => reject(err);
+    });
+  }, []);
+
   useEffect(() => {
     if (!albums?.length) return;
 
-    const loadImage = (image: AlbumType) => {
-      return new Promise((resolve, reject) => {
-        const loadImg = new Image();
-        loadImg.src = image.poster!;
-        loadImg.onload = () => resolve(image.poster);
-        loadImg.onerror = (err) => reject(err);
-      });
-    };
     Promise.all(albums.map((album) => loadImage(album)))
       .then(() => setImagesLoaded(true))
       .catch((err) => console.log("Failed to load images", err));
-  }, [store.albums, albums]);
+  }, [store.albums, albums, loadImage]);
 
-  const handleNavigate = (album: AlbumType) => {
-    navigate("/album", { state: album });
-  };
+  const handleNavigate = useCallback(
+    (album: AlbumType) => {
+      navigate("/album", { state: album });
+    },
+    [navigate]
+  );
 
   const Wrapper = styled("div")`
     margin-top: 50px;

@@ -1,6 +1,6 @@
 import { CardActions, CardContent, Grid, Typography } from "@mui/material";
 import { onAuthStateChanged } from "firebase/auth";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useStore } from "../provider";
 import { AlbumType, SongType } from "../types/musicTypes";
 import { auth } from "../utils/firebase";
@@ -30,7 +30,7 @@ export const SongsList = observer(({ choosenAlbum }: SongsListProps) => {
         setIsLogged(false);
       }
     });
-  });
+  }, []);
 
   const checkSongInFavourite = (song: SongType) => {
     if (
@@ -42,14 +42,20 @@ export const SongsList = observer(({ choosenAlbum }: SongsListProps) => {
     return false;
   };
 
-  const handleChooseSong = (song: SongType) => {
-    store.setAlbum(choosenAlbum);
-    store.changeCurrentSong(song);
-  };
+  const handleChooseSong = useCallback(
+    (song: SongType) => {
+      store.setAlbum(choosenAlbum);
+      store.changeCurrentSong(song);
+    },
+    [choosenAlbum, store]
+  );
 
-  const handleLike = (index: number) => {
-    store.addToFavourite(choosenAlbum.songs?.[index]!, choosenAlbum);
-  };
+  const handleLike = useCallback(
+    (index: number) => {
+      store.addToFavourite(choosenAlbum.songs?.[index]!, choosenAlbum);
+    },
+    [choosenAlbum, store]
+  );
 
   return (
     <Grid

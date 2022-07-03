@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
 import { observer } from "mobx-react-lite";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import AudioPlayer, { RHAP_UI } from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import { useStore } from "../provider";
@@ -79,13 +79,13 @@ export const CustomAudioPlayer: FC<CustomAudioPlayerType> = observer(
       setAudio(store.currentSong.urlPlay);
     }, [store.currentSong]);
 
-    const handleClickNext = () => {
+    const handleClickNext = useCallback(() => {
       store.switchToNextSong();
-    };
+    }, [store]);
 
-    const handleClickPrevious = () => {
+    const handleClickPrevious = useCallback(() => {
       store.switchToPreviousSong();
-    };
+    }, [store]);
 
     return (
       <Wrapper>

@@ -12,7 +12,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { ModalForm } from "./ModalForm";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, db } from "../utils/firebase";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useStore } from "../provider";
 import { observer } from "mobx-react-lite";
 
@@ -22,8 +22,8 @@ export const Navbar = observer(() => {
   const [isLogged, setIsLogged] = useState(false);
   const navigate = useNavigate();
 
-  const handleOpen = () => store.setModalOpen(true);
-  const handleClose = () => store.setModalOpen(false);
+  const handleOpen = useCallback(() => store.setModalOpen(true), [store]);
+  const handleClose = useCallback(() => store.setModalOpen(false), [store]);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -33,15 +33,20 @@ export const Navbar = observer(() => {
         setIsLogged(false);
       }
     });
-  });
 
-  const handleCloseNavMenu = () => {
+    store.setAutoplayToFalse();
+  }, [store]);
+
+  const handleCloseNavMenu = useCallback(() => {
     setAnchorElNav(null);
-  };
+  }, []);
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
+  const handleOpenNavMenu = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorElNav(event.currentTarget);
+    },
+    []
+  );
 
   const CustomAppBar = styled(AppBar)`
     min-height: 75px;

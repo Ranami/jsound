@@ -1,5 +1,5 @@
 import { Box, Button, Modal, styled } from "@mui/material";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { ModalProps } from "../types/modalPropsTypes";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
@@ -52,9 +52,9 @@ const CustomCloseIcon = styled(CloseIcon)`
 
 export const ModalForm = ({ open, onClose }: ModalProps) => {
   const [isSignIn, setIsSignIn] = useState(true);
-  const handleSwitch = () => {
+  const handleSwitch = useCallback(() => {
     setIsSignIn(!isSignIn);
-  };
+  }, [isSignIn]);
 
   return (
     <Modal

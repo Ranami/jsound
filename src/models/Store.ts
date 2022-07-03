@@ -60,6 +60,7 @@ export class Store {
   }
 
   changeCurrentSong(song: SongType) {
+    this.setAutoplayToTrue();
     this.currentSong = song;
     localStorage.setItem("currentSong", JSON.stringify(this.currentSong));
   }
