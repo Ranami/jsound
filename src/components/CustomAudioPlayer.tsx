@@ -21,20 +21,35 @@ const Image = styled("div")`
     width: 50px;
     height: 50px;
   }
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const Title = styled("div")`
   font-size: 16px;
   margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const Artist = styled("div")`
   font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const InfoWrapper = styled("div")`
   text-align: left;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  @media (max-width: 768px) {
+    width: 200px;
+  }
+  @media (max-width: 600px) {
+    width: 100px;
+  }
 `;
 
 const SongWrapper = styled("div")`
@@ -42,6 +57,12 @@ const SongWrapper = styled("div")`
   align-items: center;
   width: 200px;
   white-space: pre;
+  @media (max-width: 768px) {
+    white-space: nowrap;
+  }
+  @media (max-width: 600px) {
+    width: 100px;
+  }
 `;
 
 type CustomAudioPlayerType = {
@@ -54,7 +75,6 @@ export const CustomAudioPlayer: FC<CustomAudioPlayerType> = observer(
     const [audio, setAudio] = useState(
       JSON.parse(localStorage.getItem("currentSong")!).url || ""
     );
-
     useEffect(() => {
       setAudio(store.currentSong.urlPlay);
     }, [store.currentSong]);
@@ -76,8 +96,8 @@ export const CustomAudioPlayer: FC<CustomAudioPlayerType> = observer(
               textAlign: "center",
               color: "white",
             }}
-            onClickNext={() => handleClickNext()}
-            onClickPrevious={() => handleClickPrevious()}
+            onClickNext={handleClickNext}
+            onClickPrevious={handleClickPrevious}
             customControlsSection={[
               <SongWrapper>
                 <Image>
