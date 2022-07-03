@@ -42,11 +42,25 @@ const Poster = styled(Card)`
   }
 `;
 
-const CustomCardMedia = styled(CardMedia)`
-  &:hover {
-    opacity: 0.7;
+const CardMediaWrapper = styled("div")`
+  &:hover::after {
+    content: "";
+    background: transparent;
+    box-sizing: border-box;
+    width: 0;
+    height: 30px;
+    position: absolute;
+    top: 26%;
+    right: 40%;
+    border-color: transparent transparent transparent #ff4810;
+    border-style: solid;
+    border-width: 25px 0 25px 40px;
   }
-  transition: 0.3s;
+
+  transition: 0.5s;
+`;
+
+const CustomCardMedia = styled(CardMedia)`
   cursor: pointer;
 ` as typeof CardMedia;
 
@@ -95,14 +109,15 @@ export const AlbumPage: FC<AlbumPageType> = observer(() => {
     <Wrapper>
       {location.state.songs?.map((song: SongType, index) => (
         <Poster key={song.title} sx={{ maxWidth: 250 }}>
-          <CustomCardMedia
-            component={"img"}
-            image={song.img}
-            alt={song.artist}
-            width={"250"}
-            height={"250"}
-            onClick={() => handleChooseSong(song)}
-          />
+          <CardMediaWrapper onClick={() => handleChooseSong(song)}>
+            <CustomCardMedia
+              component={"img"}
+              image={song.img}
+              alt={song.artist}
+              width={"250"}
+              height={"250"}
+            />
+          </CardMediaWrapper>
           <CardContent>
             <Typography
               variant="subtitle2"
