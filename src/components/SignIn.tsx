@@ -8,7 +8,9 @@ import {
   SwitchModalButton,
 } from "./styled/components";
 import { getFieldState } from "../utils/getFieldState";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../utils/firebase";
+import { useStore } from "../provider";
 
 const ButtonGroup = styled("div")`
   display: flex;
@@ -22,6 +24,8 @@ type ValueProps = {
 };
 
 const SignIn = ({ switchForm }: FormProps) => {
+  const { store } = useStore();
+
   const { handleSubmit, control, reset } = useForm({
     mode: "onChange",
     defaultValues: {
@@ -31,20 +35,19 @@ const SignIn = ({ switchForm }: FormProps) => {
   });
 
   const submitHandler = ({ email, password }: ValueProps) => {
-    const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        console.log(user)
+        console.log(user);
         // ...
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
       });
+    store.setModalOpen(false);
   };
-
 
   return (
     <div>
@@ -124,7 +127,7 @@ const SignIn = ({ switchForm }: FormProps) => {
       </form>
       <ModalFooter>
         Нет аккаунта?
-        <SwitchModalButton onClick={switchForm}>
+        <SwitchModalButton onClick={switchForm} disableRipple>
           Зарегистрироваться
         </SwitchModalButton>
       </ModalFooter>

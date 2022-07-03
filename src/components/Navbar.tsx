@@ -10,6 +10,11 @@ import { Drawer, IconButton, styled } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { ModalForm } from "./ModalForm";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth, db } from "../utils/firebase";
+import { useEffect, useState } from "react";
+import { useStore } from "../provider";
+import { observer } from "mobx-react-lite";
 
 const pages = [
   {
@@ -22,13 +27,24 @@ const pages = [
   },
 ];
 
-export const Navbar = () => {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+export const Navbar = observer(() => {
+  const { store } = useStore();
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  // const [open, setOpen] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
+
+  const handleOpen = () => store.setModalOpen(true);
+  const handleClose = () => store.setModalOpen(false);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsLogged(true);
+      } else {
+        setIsLogged(false);
+      }
+    });
+  }, [auth.currentUser]);
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -60,6 +76,9 @@ export const Navbar = () => {
     }
   `;
 
+  const logout = () => {
+    signOut(auth);
+  };
   return (
     <CustomAppBar position="static">
       <Container maxWidth="xl">
@@ -149,18 +168,29 @@ export const Navbar = () => {
             ))}
           </Box>
           <Box>
-            <Button
-              variant={"contained"}
-              sx={{ fontSize: "20px", textTransform: "capitalize" }}
-              color="secondary"
-              onClick={handleOpen}
-            >
-              Войти
-            </Button>
+            {isLogged ? (
+              <Button
+                onClick={logout}
+                variant={"contained"}
+                sx={{ fontSize: "20px", textTransform: "capitalize" }}
+                color="secondary"
+              >
+                Выйти
+              </Button>
+            ) : (
+              <Button
+                variant={"contained"}
+                sx={{ fontSize: "20px", textTransform: "capitalize" }}
+                color="secondary"
+                onClick={handleOpen}
+              >
+                Войти
+              </Button>
+            )}
           </Box>
         </Toolbar>
-        <ModalForm open={open} onClose={handleClose} />
+        <ModalForm open={store.modalOpen} onClose={handleClose} />
       </Container>
     </CustomAppBar>
   );
-};
+});

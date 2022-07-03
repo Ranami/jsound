@@ -9,7 +9,8 @@ import {
   SwitchModalButton,
 } from "./styled/components";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../utils/firebase";
+import { auth, db } from "../utils/firebase";
+import { useStore } from "../provider";
 
 export type FormValues = {
   name: string;
@@ -19,6 +20,8 @@ export type FormValues = {
 };
 
 const SignUp = ({ switchForm }: FormProps) => {
+  const { store } = useStore();
+
   const { handleSubmit, control, reset, register } = useForm<FormValues>({
     mode: "onChange",
     defaultValues: {
@@ -34,14 +37,18 @@ const SignUp = ({ switchForm }: FormProps) => {
       if (values.password !== values.passwordRepeat) {
         alert("Пароли не совпадают!");
       } else {
-        console.log(values);
         createUserWithEmailAndPassword(
           auth,
           values.email,
-          values.password,
-        );
+          values.password
+        ).then((cred) => {
+          return db.collection("users").doc(cred.user.uid).set({
+            name: values.name,
+          });
+        });
         reset();
       }
+      store.setModalOpen(false);
     },
     [reset]
   );
@@ -172,7 +179,9 @@ const SignUp = ({ switchForm }: FormProps) => {
       </form>
       <ModalFooter>
         Уже есть аккаунт?
-        <SwitchModalButton onClick={switchForm}>Войдите</SwitchModalButton>
+        <SwitchModalButton onClick={switchForm} disableRipple>
+          Войдите
+        </SwitchModalButton>
       </ModalFooter>
     </div>
   );

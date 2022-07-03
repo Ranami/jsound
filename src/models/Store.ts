@@ -6,8 +6,14 @@ export class Store {
     JSON.parse(localStorage.getItem("currentSong")!) || {};
   albums: AlbumType[] = [];
   album?: AlbumType = JSON.parse(localStorage.getItem("currentAlbum")!) || {};
+  modalOpen: boolean = false;
+
   constructor() {
     makeAutoObservable(this);
+  }
+
+  setModalOpen(flag: boolean) {
+    this.modalOpen = flag;
   }
 
   changeCurrentSong(song: SongType) {
