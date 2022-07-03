@@ -2,15 +2,17 @@ import { AlbumType, SongType } from "./../types/musicTypes";
 import { makeAutoObservable } from "mobx";
 
 export class Store {
-  currentSong: SongType = {};
+  currentSong: SongType =
+    JSON.parse(localStorage.getItem("currentSong")!) || {};
   albums: AlbumType[] = [];
-  album?: AlbumType = {};
+  album?: AlbumType = JSON.parse(localStorage.getItem("currentAlbum")!) || {};
   constructor() {
     makeAutoObservable(this);
   }
 
   changeCurrentSong(song: SongType) {
     this.currentSong = song;
+    localStorage.setItem("currentSong", JSON.stringify(this.currentSong));
   }
 
   uploadAlbums(albums: AlbumType[]) {
@@ -18,8 +20,8 @@ export class Store {
   }
 
   setAlbum(album: AlbumType) {
-    let choosenAlbum = this.albums.find((alb) => alb.name === album.name);
-    this.album = choosenAlbum;
+    this.album = album;
+    localStorage.setItem("currentAlbum", JSON.stringify(album));
   }
 
   switchToNextSong() {

@@ -1,4 +1,5 @@
 import { styled } from "@mui/material";
+import { observer } from "mobx-react-lite";
 import React, { FC, useEffect, useState } from "react";
 import AudioPlayer, { RHAP_UI } from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
@@ -11,6 +12,7 @@ const Wrapper = styled("div")`
   bottom: 0;
   max-width: 1440px;
   width: 100%;
+  background-color: rgba(27, 36, 48, 0.98);
 `;
 
 const Image = styled("div")`
@@ -46,48 +48,54 @@ type CustomAudioPlayerType = {
   song?: SongType;
 };
 
-export const CustomAudioPlayer: FC<CustomAudioPlayerType> = ({ song }) => {
-  const [audio, setAudio] = useState(song?.urlPlay);
-  const { store } = useStore();
+export const CustomAudioPlayer: FC<CustomAudioPlayerType> = observer(
+  ({ song }) => {
+    const { store } = useStore();
+    const [audio, setAudio] = useState(
+      JSON.parse(localStorage.getItem("currentSong")!).url || ""
+    );
 
-  useEffect(() => {
-    setAudio(song?.urlPlay);
-  }, [song]);
+    useEffect(() => {
+      setAudio(store.currentSong.urlPlay);
+    }, [store.currentSong]);
 
-  const handleClickNext = () => {
-    store.switchToNextSong();
-  };
+    const handleClickNext = () => {
+      store.switchToNextSong();
+    };
 
-  const handleClickPrevious = () => {
-    store.switchToPreviousSong();
-  };
+    const handleClickPrevious = () => {
+      store.switchToPreviousSong();
+    };
 
-  return (
-    <Wrapper>
-      <AudioPlayer
-        src={audio}
-        style={{
-          textAlign: "center",
-          color: "white",
-        }}
-        onClickNext={() => handleClickNext()}
-        onClickPrevious={() => handleClickPrevious()}
-        customControlsSection={[
-          <SongWrapper>
-            <Image>
-              <img src={song?.img} alt={song?.title} />
-            </Image>
-            <InfoWrapper>
-              <Title>{song?.title}</Title>
-              <Artist>{song?.artist}</Artist>
-            </InfoWrapper>
-          </SongWrapper>,
-          RHAP_UI.MAIN_CONTROLS,
-          RHAP_UI.VOLUME_CONTROLS,
-        ]}
-        showSkipControls={true}
-        showJumpControls={false}
-      />
-    </Wrapper>
-  );
-};
+    return (
+      <Wrapper>
+        {audio && (
+          <AudioPlayer
+            src={audio}
+            style={{
+              textAlign: "center",
+              color: "white",
+            }}
+            onClickNext={() => handleClickNext()}
+            onClickPrevious={() => handleClickPrevious()}
+            customControlsSection={[
+              <SongWrapper>
+                <Image>
+                  <img src={song?.img} alt={song?.title} />
+                </Image>
+                <InfoWrapper>
+                  <Title>{song?.title}</Title>
+                  <Artist>{song?.artist}</Artist>
+                </InfoWrapper>
+              </SongWrapper>,
+              RHAP_UI.MAIN_CONTROLS,
+              RHAP_UI.VOLUME_CONTROLS,
+            ]}
+            showSkipControls={true}
+            showJumpControls={false}
+          />
+        )}
+      </Wrapper>
+    );
+  }
+);
