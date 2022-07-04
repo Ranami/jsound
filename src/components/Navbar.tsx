@@ -10,7 +10,7 @@ import { Drawer, IconButton, styled } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import { ModalForm } from "./ModalForm";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { auth, db } from "../utils/firebase";
 import { useCallback, useEffect, useState } from "react";
 import { useStore } from "../provider";
@@ -19,21 +19,14 @@ import { observer } from "mobx-react-lite";
 export const Navbar = observer(() => {
   const { store } = useStore();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [isLogged, setIsLogged] = useState(false);
+  const isLogged = store.isLogged;
+
   const navigate = useNavigate();
 
   const handleOpen = useCallback(() => store.setModalOpen(true), [store]);
   const handleClose = useCallback(() => store.setModalOpen(false), [store]);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setIsLogged(true);
-      } else {
-        setIsLogged(false);
-      }
-    });
-
     store.setAutoplayToFalse();
   }, [store]);
 

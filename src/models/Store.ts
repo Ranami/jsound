@@ -1,5 +1,7 @@
 import { AlbumType, SongType } from "./../types/musicTypes";
 import { makeAutoObservable, toJS } from "mobx";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 export class Store {
   currentSong: SongType =
@@ -12,9 +14,21 @@ export class Store {
     name: "Favourite",
     songs: [],
   };
+  isLogged: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.setIsLogged(true);
+      } else {
+        this.setIsLogged(false);
+      }
+    });
+  }
+
+  setIsLogged(flag: boolean) {
+    this.isLogged = flag;
   }
 
   setAutoplayToTrue() {

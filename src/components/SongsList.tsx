@@ -1,9 +1,7 @@
 import { CardActions, CardContent, Grid, Typography } from "@mui/material";
-import { onAuthStateChanged } from "firebase/auth";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { useStore } from "../provider";
 import { AlbumType, SongType } from "../types/musicTypes";
-import { auth } from "../utils/firebase";
 import {
   CardMediaWrapper,
   CustomCardMedia,
@@ -20,17 +18,7 @@ type SongsListProps = {
 
 export const SongsList = observer(({ choosenAlbum }: SongsListProps) => {
   const { store } = useStore();
-
-  const [isLogged, setIsLogged] = useState(false);
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setIsLogged(true);
-      } else {
-        setIsLogged(false);
-      }
-    });
-  }, []);
+  const isLogged = store.isLogged;
 
   const checkSongInFavourite = (song: SongType) => {
     if (
