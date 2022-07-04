@@ -43,7 +43,7 @@ export const Poster = styled(Card)`
   background-color: #1b2430;
   cursor: pointer;
   position: relative;
-  height: 400px;
+  height: 370px;
   transition: 0.2s;
   &:hover {
     transform: scale(1.05);

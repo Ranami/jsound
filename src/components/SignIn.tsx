@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { FormControl, styled, TextField, Typography } from "@mui/material";
+import { FormControl, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { FormProps } from "../types/modalPropsTypes";
 import {
@@ -11,7 +11,6 @@ import { getFieldState } from "../utils/getFieldState";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../utils/firebase";
 import { useStore } from "../provider";
-
 
 type ValueProps = {
   email: string;
@@ -29,35 +28,38 @@ const SignIn = ({ switchForm }: FormProps) => {
     },
   });
 
-  const submitHandler = useCallback(({ email, password }: ValueProps) => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        db.collection("users")
-          .doc(userCredential.user.uid)
-          .get()
-          .then((doc) => {
-            store.changeCurrentSong(doc.data()?.currentSong || {});
-            store.setAlbum(doc.data()?.currentAlbum || {});
-            store.setFavourite(
-              doc.data()?.favourite || { name: "Favourite", songs: [] }
-            );
-            store.setAutoplayToFalse();
-          });
-      })
-      .catch((error) => {
-        console.log(error.message);
-        if (error.code === "auth/wrong-password") {
-          alert("Wrong password. Try again");
-          store.setModalOpen(true);
-        } else if (error.code === "auth/user-not-found") {
-          alert("User doesn't exist");
-        } else if (error.code === "auth/too-many-requests") {
-          alert("Please try again later. There are too many requests");
-        }
-      });
-    store.setModalOpen(false);
-  }, [store]);
+  const submitHandler = useCallback(
+    ({ email, password }: ValueProps) => {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          db.collection("users")
+            .doc(user.uid)
+            .get()
+            .then((doc) => {
+              store.changeCurrentSong(doc.data()?.currentSong || {});
+              store.setAlbum(doc.data()?.currentAlbum || {});
+              store.setFavourite(
+                doc.data()?.favourite || { name: "Favourite", songs: [] }
+              );
+              store.setAutoplayToFalse();
+            });
+        })
+        .catch((error) => {
+          console.log(error.message);
+          if (error.code === "auth/wrong-password") {
+            alert("Wrong password. Try again");
+            store.setModalOpen(true);
+          } else if (error.code === "auth/user-not-found") {
+            alert("User doesn't exist");
+          } else if (error.code === "auth/too-many-requests") {
+            alert("Please try again later. There are too many requests");
+          }
+        });
+      store.setModalOpen(false);
+    },
+    [store]
+  );
 
   return (
     <div>
@@ -76,7 +78,7 @@ const SignIn = ({ switchForm }: FormProps) => {
               required: "Поле обязательное",
               validate: (value) => {
                 if (
-                  /^[\w\.-]+@[a-zA-Z]+?\.[a-zA-Z]{2,3}$/.test(value) ||
+                  /^[\w-]+@[a-zA-Z]+?\.[a-zA-Z]{2,3}$/.test(value) ||
                   value.length === 0
                 ) {
                   return true;
