@@ -1,7 +1,7 @@
 import { AlbumType, SongType } from "./../types/musicTypes";
 import { makeAutoObservable, toJS } from "mobx";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../utils/firebase";
+import { auth, db } from "../utils/firebase";
 
 export class Store {
   currentSong: SongType =
@@ -15,12 +15,19 @@ export class Store {
     songs: [],
   };
   isLogged: boolean = false;
+  userName: string = "";
 
   constructor() {
     makeAutoObservable(this);
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.setIsLogged(true);
+        db.collection("users")
+          .doc(user.uid)
+          .get()
+          .then((doc) => {
+            this.userName = doc.data()?.name;
+          });
       } else {
         this.setIsLogged(false);
       }

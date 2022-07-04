@@ -6,14 +6,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import {
-  Avatar,
-  Drawer,
-  IconButton,
-  Menu,
-  styled,
-  Tooltip,
-} from "@mui/material";
+import { Drawer, IconButton, Menu, styled, Tooltip } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -27,7 +20,9 @@ import { observer } from "mobx-react-lite";
 export const Navbar = observer(() => {
   const { store } = useStore();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
   const isLogged = store.isLogged;
 
   const navigate = useNavigate();
@@ -191,7 +186,7 @@ export const Navbar = observer(() => {
               flexGrow: 1,
             }}
           >
-            <NavLink to={`/`}>
+            <NavLink style={{ height: "60px" }} to={`/`}>
               <img
                 src={require("../assets/minilogo.png")}
                 width={60}
@@ -212,8 +207,19 @@ export const Navbar = observer(() => {
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <AccountCircleIcon sx={{ color: "white" }} fontSize="large" />
+              <IconButton
+                onClick={handleOpenUserMenu}
+                sx={{ p: 0, color: "white" }}
+              >
+                <Typography
+                  sx={{
+                    display: { xs: "none", md: "block" },
+                    marginRight: 1,
+                  }}
+                >
+                  {isLogged ? store?.userName : ""}
+                </Typography>
+                <AccountCircleIcon fontSize="large" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -232,6 +238,20 @@ export const Navbar = observer(() => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
+              {isLogged ? (
+                <MenuItem sx={{ display: { xs: "block", md: "none" } }}>
+                  <Typography
+                    sx={{
+                      fontSize: { xs: "24px", md: "16px" },
+                    }}
+                    textAlign="center"
+                  >
+                    {store?.userName}
+                  </Typography>
+                </MenuItem>
+              ) : (
+                ""
+              )}
               <MenuItem onClick={handleCloseUserMenu}>
                 {isLogged ? (
                   <Typography
