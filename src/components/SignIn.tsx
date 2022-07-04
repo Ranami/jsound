@@ -20,7 +20,7 @@ type ValueProps = {
 const SignIn = ({ switchForm }: FormProps) => {
   const { store } = useStore();
 
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control, reset } = useForm({
     mode: "onChange",
     defaultValues: {
       email: "",
@@ -57,8 +57,9 @@ const SignIn = ({ switchForm }: FormProps) => {
           }
         });
       store.setModalOpen(false);
+      reset();
     },
-    [store]
+    [store, reset]
   );
 
   return (
@@ -104,7 +105,7 @@ const SignIn = ({ switchForm }: FormProps) => {
             rules={{
               required: "Поле обязательное",
               validate: (value) => {
-                if (value.length <= 4) {
+                if (value.length < 4) {
                   return "Password cannot be less than 4 characters";
                 } else {
                   return true;

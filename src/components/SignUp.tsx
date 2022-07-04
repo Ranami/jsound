@@ -86,7 +86,7 @@ const SignUp = ({ switchForm }: FormProps) => {
             control={control}
             rules={{
               validate: (value) => {
-                if (value.length < 5) return "Type more than 5 symbols";
+                if (value.length < 8) return "Type more than 8 symbols";
                 return true;
               },
               required: "Поле обязательное",
