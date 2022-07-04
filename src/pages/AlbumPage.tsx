@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import { useLocation } from "react-router-dom";
 import { AlbumType } from "../types/musicTypes";
-import { observer } from "mobx-react-lite";
 import { SongsList } from "../components/SongsList";
 import {
   PageWrapper,
