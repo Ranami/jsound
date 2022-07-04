@@ -9,7 +9,8 @@ import {
   SwitchModalButton,
 } from "./styled/components";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../utils/firebase";
+import { auth, db } from "../utils/firebase";
+import { useStore } from "../provider";
 
 export type FormValues = {
   name: string;
@@ -19,7 +20,9 @@ export type FormValues = {
 };
 
 const SignUp = ({ switchForm }: FormProps) => {
-  const { handleSubmit, control, reset, register } = useForm<FormValues>({
+  const { store } = useStore();
+
+  const { handleSubmit, control, reset } = useForm<FormValues>({
     mode: "onChange",
     defaultValues: {
       name: "",
@@ -34,16 +37,41 @@ const SignUp = ({ switchForm }: FormProps) => {
       if (values.password !== values.passwordRepeat) {
         alert("Пароли не совпадают!");
       } else {
-        console.log(values);
-        createUserWithEmailAndPassword(
-          auth,
-          values.email,
-          values.password,
-        );
+        createUserWithEmailAndPassword(auth, values.email, values.password)
+          .then((cred) => {
+            return db
+              .collection("users")
+              .doc(cred.user.uid)
+              .set({
+                name: values.name,
+                currentSong:
+                  JSON.parse(localStorage.getItem("currentSong")!) || {},
+                currentAlbum:
+                  JSON.parse(localStorage.getItem("currentAlbum")!) || {},
+                favourite: [],
+              });
+          })
+          .catch((error) => {
+            if (error.code === "auth/email-already-in-use") {
+              console.error(error.message);
+              alert("The email address is already in use");
+            } else if (error.code === "auth/invalid-email") {
+              console.error(error.message);
+              alert("The email address is not valid.");
+            } else if (error.code === "auth/operation-not-allowed") {
+              console.error(error.message);
+              alert("Operation not allowed.");
+            } else if (error.code === "auth/weak-password") {
+              console.error(error.message);
+              alert("The password is too weak.");
+            }
+          });
         reset();
       }
+
+      store.setModalOpen(false);
     },
-    [reset]
+    [reset, store]
   );
 
   return (
@@ -58,7 +86,7 @@ const SignUp = ({ switchForm }: FormProps) => {
             control={control}
             rules={{
               validate: (value) => {
-                if (value.length < 5) return "Type more than 5 symbols";
+                if (value.length < 8) return "Type more than 8 symbols";
                 return true;
               },
               required: "Поле обязательное",
@@ -88,7 +116,7 @@ const SignUp = ({ switchForm }: FormProps) => {
                 ) {
                   return true;
                 } else {
-                  return "Please type valid password";
+                  return "The password must be at least 8 characters, include letters, numbers and special characters";
                 }
               },
             }}
@@ -141,7 +169,7 @@ const SignUp = ({ switchForm }: FormProps) => {
               required: "Поле обязательное",
               validate: (value) => {
                 if (
-                  /^[\w\.-]+@[a-zA-Z]+?\.[a-zA-Z]{2,3}$/.test(value) ||
+                  /^[\w-]+@[a-zA-Z]+?\.[a-zA-Z]{2,3}$/.test(value) ||
                   value.length === 0
                 ) {
                   return true;
@@ -172,7 +200,9 @@ const SignUp = ({ switchForm }: FormProps) => {
       </form>
       <ModalFooter>
         Уже есть аккаунт?
-        <SwitchModalButton onClick={switchForm}>Войдите</SwitchModalButton>
+        <SwitchModalButton onClick={switchForm} disableRipple>
+          Войдите
+        </SwitchModalButton>
       </ModalFooter>
     </div>
   );

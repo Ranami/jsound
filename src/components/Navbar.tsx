@@ -3,80 +3,110 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import { IconButton, styled } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { Drawer, IconButton, Menu, styled, Tooltip } from "@mui/material";
+import { NavLink, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { ModalForm } from "./ModalForm";
+import { signOut } from "firebase/auth";
+import { auth, db } from "../utils/firebase";
+import { useCallback, useEffect, useState } from "react";
+import { useStore } from "../provider";
+import { observer } from "mobx-react-lite";
 
-const pages = [
-  {
-    name: "",
-    title: "Главное",
-  },
-  {
-    name: "collection",
-    title: "Коллекция",
-  },
-];
+const CustomAppBar = styled(AppBar)`
+  min-height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
-export const Navbar = () => {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+const CustomNavLink = styled(NavLink)`
+  color: hsla(0, 0%, 100%, 0.5);
+  text-decoration: none;
+  text-transform: none;
+  font-size: 20px;
+  transition: 0.2s;
+  margin-left: 5px;
+  &.active {
+    color: white;
+  }
+  &:hover {
+    color: #ff4810;
+  }
+`;
+
+export const Navbar = observer(() => {
+  const { store } = useStore();
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const isLogged = store.isLogged;
 
-  const handleCloseNavMenu = () => {
+  const navigate = useNavigate();
+
+  const handleOpen = useCallback(() => store.setModalOpen(true), [store]);
+  const handleClose = useCallback(() => store.setModalOpen(false), [store]);
+
+  useEffect(() => {
+    store.setAutoplayToFalse();
+  }, [store]);
+
+  const handleCloseNavMenu = useCallback(() => {
     setAnchorElNav(null);
+  }, []);
+
+  const handleOpenNavMenu = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorElNav(event.currentTarget);
+    },
+    []
+  );
+
+  const handleOpenUserMenu = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorElUser(event.currentTarget);
+    },
+    []
+  );
+
+  const handleCloseUserMenu = useCallback(() => {
+    setAnchorElUser(null);
+  }, []);
+
+  const logout = () => {
+    db.collection("users")
+      .doc(auth.currentUser?.uid)
+      .update({
+        currentSong: JSON.parse(localStorage.getItem("currentSong")!),
+        currentAlbum: JSON.parse(localStorage.getItem("currentAlbum")!),
+        favourite: JSON.parse(localStorage.getItem("favourite")!),
+      });
+
+    store.cleanFavourite();
+    signOut(auth);
+    navigate("/");
   };
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const CustomAppBar = styled(AppBar)`
-    min-height: 75px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `;
-
-  const CustomNavLink = styled(NavLink)`
-    color: hsla(0, 0%, 100%, 0.5);
-    text-decoration: none;
-    text-transform: none;
-    font-size: 20px;
-    transition: 0.2s;
-    margin-left: 5px;
-    &.active {
-      color: white;
-    }
-    &:hover {
-      color: #ff4810;
-    }
-  `;
-
   return (
     <CustomAppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-            }}
-          >
-            <img src={require("../assets/logo.png")} alt="Logo" />
-          </Typography>
+          <NavLink to={`/`}>
+            <Typography
+              variant="h6"
+              noWrap
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+              }}
+            >
+              <img src={require("../assets/logo.png")} alt="Logo" />
+            </Typography>
+          </NavLink>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -89,71 +119,166 @@ export const Navbar = () => {
             >
               <MenuIcon fontSize={"large"} />
             </IconButton>
-            <Menu
+            <Drawer
               id="menu-appbar"
-              anchorEl={anchorElNav}
+              keepMounted
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              anchor="left"
+              sx={{
+                display: { xs: "block", md: "none" },
+              }}
+              PaperProps={{
+                sx: { width: "75%" },
+              }}
+            >
+              <MenuItem
+                onClick={handleCloseNavMenu}
+                sx={{
+                  borderBottom: { xs: "3px solid #ff4810" },
+                }}
+              >
+                <NavLink style={{ textDecoration: "none" }} to={`/`}>
+                  <Typography
+                    color={"primary"}
+                    sx={{
+                      width: "100%",
+                      fontSize: { xs: "24px", md: "16px" },
+                    }}
+                  >
+                    Главное
+                  </Typography>
+                </NavLink>
+              </MenuItem>
+              {isLogged && (
+                <MenuItem
+                  onClick={handleCloseNavMenu}
+                  sx={{
+                    borderBottom: { xs: "3px solid #ff4810" },
+                  }}
+                >
+                  <NavLink
+                    style={{ textDecoration: "none" }}
+                    to={`/collection`}
+                  >
+                    <Typography
+                      color={"primary"}
+                      sx={{
+                        width: "100%",
+                        fontSize: { xs: "24px", md: "16px" },
+                      }}
+                    >
+                      Коллекция
+                    </Typography>
+                  </NavLink>
+                </MenuItem>
+              )}
+            </Drawer>
+          </Box>
+
+          <Typography
+            variant="h6"
+            noWrap
+            sx={{
+              mr: 2,
+              display: { xs: "flex", md: "none" },
+              alignItems: "center",
+              flexGrow: 1,
+            }}
+          >
+            <NavLink style={{ height: "60px" }} to={`/`}>
+              <img
+                src={require("../assets/minilogo.png")}
+                width={60}
+                alt="Logo"
+              />
+            </NavLink>
+          </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            <Button onClick={handleCloseNavMenu}>
+              <CustomNavLink to={`/`}>Главное</CustomNavLink>
+            </Button>
+
+            {isLogged && (
+              <Button onClick={handleCloseNavMenu}>
+                <CustomNavLink to={`/collection`}>Коллекция</CustomNavLink>
+              </Button>
+            )}
+          </Box>
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="">
+              <IconButton
+                onClick={handleOpenUserMenu}
+                sx={{ p: 0, color: "white" }}
+              >
+                <Typography
+                  sx={{
+                    display: { xs: "none", md: "block" },
+                    marginRight: 1,
+                  }}
+                >
+                  {isLogged ? store?.userName : ""}
+                </Typography>
+                <AccountCircleIcon fontSize="large" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              anchorEl={anchorElUser}
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
               anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
+                vertical: "top",
+                horizontal: "right",
               }}
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "left",
+                horizontal: "right",
               }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
             >
-              {pages.map((page) => (
-                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                  <NavLink
-                    style={{ textDecoration: "none" }}
-                    to={`/${page.name}`}
+              {isLogged && (
+                <Typography
+                  sx={{
+                    display: { xs: "block", md: "none" },
+                    fontSize: { xs: "24px", md: "16px" },
+                  }}
+                  textAlign="center"
+                >
+                  {store?.userName}
+                </Typography>
+              )}
+              <MenuItem onClick={handleCloseUserMenu}>
+                {isLogged ? (
+                  <Typography
+                    color={"primary"}
+                    sx={{
+                      fontSize: { xs: "24px", md: "16px" },
+                    }}
+                    textAlign="center"
+                    onClick={logout}
                   >
-                    <Typography color={"primary"} textAlign="center">
-                      {page.title}
-                    </Typography>
-                  </NavLink>
-                </MenuItem>
-              ))}
+                    Выйти
+                  </Typography>
+                ) : (
+                  <Typography
+                    color={"primary"}
+                    sx={{
+                      fontSize: { xs: "24px", md: "16px" },
+                    }}
+                    textAlign="center"
+                    onClick={handleOpen}
+                  >
+                    Войти
+                  </Typography>
+                )}
+              </MenuItem>
             </Menu>
           </Box>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-            }}
-          >
-            <img src={require("../assets/logo.png")} width={160} alt="Logo" />
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button key={page.name} onClick={handleCloseNavMenu}>
-                <CustomNavLink to={`/${page.name}`}>{page.title}</CustomNavLink>
-              </Button>
-            ))}
-          </Box>
-          <Box>
-            <Button
-              variant={"contained"}
-              sx={{ fontSize: "20px", textTransform: "capitalize" }}
-              color="secondary"
-              onClick={handleOpen}
-            >
-              Войти
-            </Button>
-          </Box>
         </Toolbar>
-        <ModalForm open={open} onClose={handleClose} />
+        <ModalForm open={store.modalOpen} onClose={handleClose} />
       </Container>
     </CustomAppBar>
   );
-};
+});

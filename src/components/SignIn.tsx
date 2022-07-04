@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { FormControl, styled, TextField, Typography } from "@mui/material";
+import React, { useCallback } from "react";
+import { FormControl, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { FormProps } from "../types/modalPropsTypes";
 import {
@@ -8,13 +8,9 @@ import {
   SwitchModalButton,
 } from "./styled/components";
 import { getFieldState } from "../utils/getFieldState";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-
-const ButtonGroup = styled("div")`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../utils/firebase";
+import { useStore } from "../provider";
 
 type ValueProps = {
   email: string;
@@ -22,6 +18,8 @@ type ValueProps = {
 };
 
 const SignIn = ({ switchForm }: FormProps) => {
+  const { store } = useStore();
+
   const { handleSubmit, control, reset } = useForm({
     mode: "onChange",
     defaultValues: {
@@ -30,21 +28,39 @@ const SignIn = ({ switchForm }: FormProps) => {
     },
   });
 
-  const submitHandler = ({ email, password }: ValueProps) => {
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log(user)
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
-  };
-
+  const submitHandler = useCallback(
+    ({ email, password }: ValueProps) => {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          db.collection("users")
+            .doc(user.uid)
+            .get()
+            .then((doc) => {
+              store.changeCurrentSong(doc.data()?.currentSong || {});
+              store.setAlbum(doc.data()?.currentAlbum || {});
+              store.setFavourite(
+                doc.data()?.favourite || { name: "Favourite", songs: [] }
+              );
+              store.setAutoplayToFalse();
+            });
+        })
+        .catch((error) => {
+          console.log(error.message);
+          if (error.code === "auth/wrong-password") {
+            alert("Wrong password. Try again");
+            store.setModalOpen(true);
+          } else if (error.code === "auth/user-not-found") {
+            alert("User doesn't exist");
+          } else if (error.code === "auth/too-many-requests") {
+            alert("Please try again later. There are too many requests");
+          }
+        });
+      store.setModalOpen(false);
+      reset();
+    },
+    [store, reset]
+  );
 
   return (
     <div>
@@ -63,7 +79,7 @@ const SignIn = ({ switchForm }: FormProps) => {
               required: "Поле обязательное",
               validate: (value) => {
                 if (
-                  /^[\w\.-]+@[a-zA-Z]+?\.[a-zA-Z]{2,3}$/.test(value) ||
+                  /^[\w-]+@[a-zA-Z]+?\.[a-zA-Z]{2,3}$/.test(value) ||
                   value.length === 0
                 ) {
                   return true;
@@ -89,15 +105,10 @@ const SignIn = ({ switchForm }: FormProps) => {
             rules={{
               required: "Поле обязательное",
               validate: (value) => {
-                if (
-                  /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$/.test(
-                    value
-                  ) ||
-                  value.length === 0
-                ) {
-                  return true;
+                if (value.length < 4) {
+                  return "Password cannot be less than 4 characters";
                 } else {
-                  return "Please type valid password";
+                  return true;
                 }
               },
             }}
@@ -124,7 +135,7 @@ const SignIn = ({ switchForm }: FormProps) => {
       </form>
       <ModalFooter>
         Нет аккаунта?
-        <SwitchModalButton onClick={switchForm}>
+        <SwitchModalButton onClick={switchForm} disableRipple>
           Зарегистрироваться
         </SwitchModalButton>
       </ModalFooter>
