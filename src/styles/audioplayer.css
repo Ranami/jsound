@@ -1,0 +1,42 @@
+.rhap_time, .rhap_current-time, .rhap_main-controls-button,
+.rhap_button-clear, .rhap_volume-button {
+    color: white;
+}
+
+.rhap_progress-bar {
+    background-color: white;
+    height: 10px;
+}
+
+.rhap_progress-indicator {
+    display: none;
+}
+
+.rhap_download-progress {
+    background-color: #ff481097;
+
+}
+
+.rhap_progress-filled {
+    background-color: #ff4810;
+
+}
+
+.rhap_container {
+    text-align: center;
+    background-color: rgba(27, 36, 48, 0.98);
+}
+
+.rhap_volume-controls {
+    flex: none;
+}
+
+.rhap_volume-container {
+    width: 200px;
+}
+
+@media (max-width: 600px) {
+    .rhap_volume-container {
+        width: 100px;
+    }
+}
