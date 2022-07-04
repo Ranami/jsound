@@ -6,9 +6,17 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import { Drawer, IconButton, styled } from "@mui/material";
+import {
+  Avatar,
+  Drawer,
+  IconButton,
+  Menu,
+  styled,
+  Tooltip,
+} from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { ModalForm } from "./ModalForm";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../utils/firebase";
@@ -19,6 +27,7 @@ import { observer } from "mobx-react-lite";
 export const Navbar = observer(() => {
   const { store } = useStore();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const isLogged = store.isLogged;
 
   const navigate = useNavigate();
@@ -40,6 +49,17 @@ export const Navbar = observer(() => {
     },
     []
   );
+
+  const handleOpenUserMenu = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorElUser(event.currentTarget);
+    },
+    []
+  );
+
+  const handleCloseUserMenu = useCallback(() => {
+    setAnchorElUser(null);
+  }, []);
 
   const CustomAppBar = styled(AppBar)`
     min-height: 75px;
@@ -190,26 +210,54 @@ export const Navbar = observer(() => {
               </Button>
             )}
           </Box>
-          <Box>
-            {isLogged ? (
-              <Button
-                onClick={logout}
-                variant={"contained"}
-                sx={{ fontSize: "20px", textTransform: "capitalize" }}
-                color="secondary"
-              >
-                Выйти
-              </Button>
-            ) : (
-              <Button
-                variant={"contained"}
-                sx={{ fontSize: "20px", textTransform: "capitalize" }}
-                color="secondary"
-                onClick={handleOpen}
-              >
-                Войти
-              </Button>
-            )}
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <AccountCircleIcon sx={{ color: "white" }} fontSize="large" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              <MenuItem onClick={handleCloseUserMenu}>
+                {isLogged ? (
+                  <Typography
+                    color={"primary"}
+                    sx={{
+                      fontSize: { xs: "24px", md: "16px" },
+                    }}
+                    textAlign="center"
+                    onClick={logout}
+                  >
+                    Выйти
+                  </Typography>
+                ) : (
+                  <Typography
+                    color={"primary"}
+                    sx={{
+                      fontSize: { xs: "24px", md: "16px" },
+                    }}
+                    textAlign="center"
+                    onClick={handleOpen}
+                  >
+                    Войти
+                  </Typography>
+                )}
+              </MenuItem>
+            </Menu>
           </Box>
         </Toolbar>
         <ModalForm open={store.modalOpen} onClose={handleClose} />
