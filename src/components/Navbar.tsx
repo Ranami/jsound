@@ -17,6 +17,28 @@ import { useCallback, useEffect, useState } from "react";
 import { useStore } from "../provider";
 import { observer } from "mobx-react-lite";
 
+const CustomAppBar = styled(AppBar)`
+  min-height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const CustomNavLink = styled(NavLink)`
+  color: hsla(0, 0%, 100%, 0.5);
+  text-decoration: none;
+  text-transform: none;
+  font-size: 20px;
+  transition: 0.2s;
+  margin-left: 5px;
+  &.active {
+    color: white;
+  }
+  &:hover {
+    color: #ff4810;
+  }
+`;
+
 export const Navbar = observer(() => {
   const { store } = useStore();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -55,28 +77,6 @@ export const Navbar = observer(() => {
   const handleCloseUserMenu = useCallback(() => {
     setAnchorElUser(null);
   }, []);
-
-  const CustomAppBar = styled(AppBar)`
-    min-height: 75px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `;
-
-  const CustomNavLink = styled(NavLink)`
-    color: hsla(0, 0%, 100%, 0.5);
-    text-decoration: none;
-    text-transform: none;
-    font-size: 20px;
-    transition: 0.2s;
-    margin-left: 5px;
-    &.active {
-      color: white;
-    }
-    &:hover {
-      color: #ff4810;
-    }
-  `;
 
   const logout = () => {
     db.collection("users")
@@ -206,7 +206,7 @@ export const Navbar = observer(() => {
             )}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title="">
               <IconButton
                 onClick={handleOpenUserMenu}
                 sx={{ p: 0, color: "white" }}
@@ -223,9 +223,9 @@ export const Navbar = observer(() => {
               </IconButton>
             </Tooltip>
             <Menu
+              anchorEl={anchorElUser}
               sx={{ mt: "45px" }}
               id="menu-appbar"
-              anchorEl={anchorElUser}
               anchorOrigin={{
                 vertical: "top",
                 horizontal: "right",
@@ -238,19 +238,16 @@ export const Navbar = observer(() => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {isLogged ? (
-                <MenuItem sx={{ display: { xs: "block", md: "none" } }}>
-                  <Typography
-                    sx={{
-                      fontSize: { xs: "24px", md: "16px" },
-                    }}
-                    textAlign="center"
-                  >
-                    {store?.userName}
-                  </Typography>
-                </MenuItem>
-              ) : (
-                ""
+              {isLogged && (
+                <Typography
+                  sx={{
+                    display: { xs: "block", md: "none" },
+                    fontSize: { xs: "24px", md: "16px" },
+                  }}
+                  textAlign="center"
+                >
+                  {store?.userName}
+                </Typography>
               )}
               <MenuItem onClick={handleCloseUserMenu}>
                 {isLogged ? (

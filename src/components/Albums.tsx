@@ -7,6 +7,38 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useStore } from "../provider";
 import { observer } from "mobx-react-lite";
 
+const Wrapper = styled("div")`
+  margin-top: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  position: relative;
+`;
+
+const Poster = styled("div")`
+  &:hover {
+    opacity: 0.7;
+  }
+  transition: 0.3s;
+  cursor: pointer;
+`;
+
+const Img = styled("img")`
+  width: 250px;
+  @media (max-width: 768px) {
+    width: 200px;
+  }
+`;
+
+const CustomCircularProgress = styled(CircularProgress)`
+  color: white;
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 export const Albums = observer(() => {
   const navigate = useNavigate();
   const [albums, setAlbums] = useState<AlbumType[]>();
@@ -43,38 +75,6 @@ export const Albums = observer(() => {
     },
     [navigate]
   );
-
-  const Wrapper = styled("div")`
-    margin-top: 50px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
-    position: relative;
-  `;
-
-  const Poster = styled("div")`
-    &:hover {
-      opacity: 0.7;
-    }
-    transition: 0.3s;
-    cursor: pointer;
-  `;
-
-  const Img = styled("img")`
-    width: 250px;
-    @media (max-width: 768px) {
-      width: 200px;
-    }
-  `;
-
-  const CustomCircularProgress = styled(CircularProgress)`
-    color: white;
-    position: absolute;
-    top: 50%;
-    right: 50%;
-    transform: translate(-50%, -50%);
-  `;
 
   return (
     <Wrapper>

@@ -26,12 +26,16 @@ export class Store {
           .doc(user.uid)
           .get()
           .then((doc) => {
-            this.userName = doc.data()?.name;
+            this.setUserName(doc.data()?.name);
           });
       } else {
         this.setIsLogged(false);
       }
     });
+  }
+
+  setUserName(name: string) {
+    this.userName = name;
   }
 
   setIsLogged(flag: boolean) {
