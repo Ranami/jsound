@@ -8,10 +8,7 @@ import {
   ModalSubmitButton,
   SwitchModalButton,
 } from "./styled/components";
-import {
-  createUserWithEmailAndPassword,
-  fetchSignInMethodsForEmail,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../utils/firebase";
 import { useStore } from "../provider";
 
@@ -25,7 +22,7 @@ export type FormValues = {
 const SignUp = ({ switchForm }: FormProps) => {
   const { store } = useStore();
 
-  const { handleSubmit, control, reset, register } = useForm<FormValues>({
+  const { handleSubmit, control, reset } = useForm<FormValues>({
     mode: "onChange",
     defaultValues: {
       name: "",
@@ -74,7 +71,7 @@ const SignUp = ({ switchForm }: FormProps) => {
 
       store.setModalOpen(false);
     },
-    [reset]
+    [reset, store]
   );
 
   return (
@@ -93,7 +90,6 @@ const SignUp = ({ switchForm }: FormProps) => {
                 return true;
               },
               required: "Поле обязательное",
-              
             }}
             render={({ field, fieldState, formState }) => (
               <TextField
@@ -132,7 +128,6 @@ const SignUp = ({ switchForm }: FormProps) => {
                 {...field}
                 {...getFieldState({ formState, fieldState })}
               />
-              
             )}
           />
         </FormControl>
@@ -174,7 +169,7 @@ const SignUp = ({ switchForm }: FormProps) => {
               required: "Поле обязательное",
               validate: (value) => {
                 if (
-                  /^[\w\.-]+@[a-zA-Z]+?\.[a-zA-Z]{2,3}$/.test(value) ||
+                  /^[\w-]+@[a-zA-Z]+?\.[a-zA-Z]{2,3}$/.test(value) ||
                   value.length === 0
                 ) {
                   return true;
